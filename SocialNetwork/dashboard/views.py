@@ -36,6 +36,8 @@ class Logout(LogoutView):
 class ProfileView(TemplateView):
     template_name = 'dashboard/profile-view.html'
 
+    
+
 def home(request):
     return render(request,'dashboard/home.html',{})
 

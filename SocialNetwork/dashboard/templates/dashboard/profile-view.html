@@ -1,5 +1,23 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body %}
-<h1>profile</h1>
+
+<div class ="container">
+    <div class="row">
+        <div class="col-md-2"></div>       
+        <div class = "card border shadow-2-strong col-md-8 mx-auto" style="margin-top:10px">
+            <div class = "card-body">
+                <div class="row">
+                    <img src="{% static 'images/login.png' %}" class="col-md-4"/>
+                    <div class = "col-md-6">
+                        <h4>{{ request.user.username }} <a class="btn btn-outline-primary" href="#" style="border-radius: 4px "><i class="far fa-edit"></i> edit</a></h4>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
 {% endblock %}
