@@ -8,46 +8,20 @@
         <div class="col-md-6" style="margin-top:30px">
             <div class = "card border">
                 <div class = "card-body">
-                        <figure>
-                            <img src="#" alt="">
-                        </figure>
-                        <div class="newpst-input">
-                            <form method="post" action="#" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <textarea rows="2" name="body" placeholder="Write something"></textarea>
-                                <div class="attachments">
-                                    <ul>
-                                        <li>
-                                            <i class="fa fa-music"></i>
-                                            <label class="fileContainer">
-                                                <input type="file" >
-                                            </label>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-image"></i>
-                                            <label class="fileContainer">
-                                                <input type="file" >
-                                            </label>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-video-camera"></i>
-                                            <label class="fileContainer">
-                                                <input type="file">
-                                            </label>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-camera"></i>
-                                            <label class="fileContainer">
-                                                <input type="file">
-                                            </label>
-                                        </li>
-                                        <li>
-                                            <button type="submit">Post</button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </form>
+                    <form method = "POST" action = "">
+                        {% csrf_token %}
+                        <span class="text-danger small">{{ form.non_field_errors }}</span>
+                         {% for field in form %}
+                          <div class="mb-3">
+                              <label class="form-label">{{ field.label }}</label>
+                              {{ field }}
+                          </div>
+                          {% endfor %}
+                        <div class = "text-center">
+                          <button class="btn btn-primary" type="submit"><span>Post</span></button>
+                          <!-- <a class ="btn btn-primary col-md-4" href="{% url 'dashboard:register' %}">Register</a> -->
                         </div>
+                    </form>
                     </div>
                 </div><!-- add post new box -->
                 <div class="loadMore">
