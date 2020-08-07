@@ -11,6 +11,7 @@ class UserSignUpForm(UserCreationForm):
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     gender = forms.CharField(widget=forms.Select(choices=(('MALE', 'MALE'), ('FEMALE', 'FEMALE')), attrs={'class':'form-select'}))
 
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields=('username','first_name','last_name','email','gender','date_of_birth','password1',)

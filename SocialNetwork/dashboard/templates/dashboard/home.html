@@ -8,20 +8,41 @@
         <div class="col-md-6" style="margin-top:30px">
             <div class = "card border">
                 <div class = "card-body">
-                    <form method = "POST" action = "">
-                        {% csrf_token %}
-                        <span class="text-danger small">{{ form.non_field_errors }}</span>
-                         {% for field in form %}
-                          <div class="mb-3">
-                              <label class="form-label">{{ field.label }}</label>
-                              {{ field }}
-                          </div>
-                          {% endfor %}
-                        <div class = "text-center">
-                          <button class="btn btn-primary" type="submit"><span>Post</span></button>
-                          <!-- <a class ="btn btn-primary col-md-4" href="{% url 'dashboard:register' %}">Register</a> -->
+                    <div class ="row">
+                        <div class="col-md-2">
+                            <figure class ="user_profile_image">
+                                {% if request.user.user_image %}
+                                <img src="{{ user.user_image.url }}" alt="">
+                                {% else %}
+                                <img src="{% static 'images/default.jpg' %}" alt="">
+                                {% endif %}
+                            </figure>
                         </div>
-                    </form>
+                        <div class="col-md-10">
+                            <div class="newpst-input">
+                                <form method="post" action="{% url 'post:home' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <textarea rows="2" name="post_body" placeholder="Write something"></textarea>
+                                    <div class="attachments">
+                                        <ul>
+                                            <li>
+                                                <i class="fa fa-image"></i>
+                                                <label class="fileContainer">
+                                                    <input type="file" name="post_image" required>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <button type="submit" class = "btn btn-primary">Post</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                       
+                    </div>
+                    
+                    
                     </div>
                 </div><!-- add post new box -->
                 <div class="loadMore">
@@ -30,26 +51,26 @@
                             <div class="user-post">
                                 <div class="friend-info">
                                     <figure>
-                                        {% if post.user.profile.profile_image.url %}
-                                            <img src="#" alt="">
+                                        {% if post.user.user_image.url %}
+                                            <img src="{{ post.user.user_image.url }}" alt="">
                                         {% else %}
-                                            <img src="{% static 'images/default.jpg' %}" alt="">
+                                            <img src="{% static 'images/default.jpg' %}"  alt="">
                                         {% endif %}
                                     </figure>
                                     <div class="friend-name">
                                         <ins><a href="#" title="">{{ post.user.username }}</a></ins>
-                                        <span>published: {{ post.created_at|timesince }} ago</span>
+                                        <span>published: {{ post.post_date|timesince }} ago</span>
                                     </div>
                                     <div class="post-meta">
                                         <img src="#" alt="">
                                         <div class="we-video-info">
                                             <ul>
-                                                <li>
+                                                <!-- <li>
                                                     <span class="comment" data-toggle="tooltip" title="Comments">
                                                         <i class="fa fa-comments-o"></i>
                                                         <ins>{{ post.comments.count }}</ins>
                                                     </span>
-                                                </li>
+                                                </li> -->
                                                 <li>
                                                     <span class="like" data-toggle="tooltip" title="like">
                                                         <i class="ti-heart"></i>
@@ -98,7 +119,8 @@
                                             </ul>
                                         </div>
                                         <div class="description">
-                                            <p>{{ post.body }}</p>
+                                            <img src="{{ post.post_image.url }}"width="600" height="250">
+                                            <p>{{ post.post_body }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +132,7 @@
                                                     {% if comment.user.profile.profile_image.url %}
                                                         <img src="#" alt="">
                                                     {% else %}
-                                                        <img src="{% static 'images/default.jpg' %}" alt="">
+                                                        <img src="{{ comment.user.user_image.url }}" alt="">
                                                     {% endif %}
                                                 </div>
                                                 <div class="we-comment">
@@ -128,9 +150,12 @@
                                                 <img src=# alt="">
                                             </div>
                                             <div class="post-comt-box">
-                                                <form method="post" id="comment-form" action="#">
+                                                <form method="post"  action="{% url 'post:comment-create' post.id %}">
                                                     {% csrf_token %}
-                                                    <input placeholder="Post your comment" name="content">
+                                                    <input placeholder="Post your comment" id="comment-form" name="content">
+                                                    
+                                                    <button type="submit" class = "btn btn-primary">Comment</button>
+                                                   
                                                 </form>
                                             </div>
                                         </li>

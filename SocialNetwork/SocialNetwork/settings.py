@@ -124,7 +124,7 @@ USE_TZ = True
 
 AUTH_USER_MODEL = "dashboard.User"
 
-LOGIN_REDIRECT_URL = 'dashboard:home'
+LOGIN_REDIRECT_URL = 'post:home'
 LOGIN_URL = 'dashboard:login'
 LOGOUT_REDIRECT_URL = 'dashboard:login'
 
