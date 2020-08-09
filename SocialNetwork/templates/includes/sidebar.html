@@ -1,12 +1,12 @@
 
-<div class="col-lg-3" style = "margin-top:30px">
+<div class="col-lg-3" >
     <aside class="sidebar static">
         <div class="widget">
             <h4 class="widget-title">Shortcuts</h4>
             <ul class="naves">
                 <li>
                     <i class="fa fa-clipboard" aria-hidden="true"></i>
-                    <a href="#" title="">Posts</a>
+                    <a href="{% url 'post:home' %}" title="">Posts</a>
                 </li>
                 <li>
                     <i class="fa fa-inbox" aria-hidden="true"></i>
@@ -14,7 +14,7 @@
                 </li>
                 <li>
                     <i class="fa fa-user" aria-hidden="true"></i>
-                    <a href="#" title="">Find Friends</a>
+                    <a href="{% url 'friend:find-friends' %}" title="">Find Friends</a>
                 </li>
                 <li>
                     <i class="fa fa-user" aria-hidden="true"></i>
