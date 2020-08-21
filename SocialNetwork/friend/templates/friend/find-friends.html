@@ -5,7 +5,7 @@
 <div class="container-fluid">
     <div class="row">
         {% include 'includes/sidebar.html' %}
-            <div class="col-md-6" style="margin-top:0px">
+            <div class="col-md-6" style="margin-top:40px">
                 {% block center_content %}
                     <div class="central-meta">
                         <div class="frnds">
@@ -49,97 +49,76 @@
             
             <aside class="sidebar static">
                 <div class="widget">
-                    <h4 class="widget-title">Who's follownig</h4>
+                    <h4 class="widget-title">Pending Request</h4>
+                    {% for user in recieve_request %}
                     <ul class="followers">
                        
                         <li>
-                            <figure><img src="images/resources/friend-avatar3.jpg" alt=""></figure>
+                            <figure>
+                                {% if user.user_image %}
+                                <a href="#" title=""><img src="{{ user.user_image.url }}" alt=""></a>
+                                {% else %}
+                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                {% endif %}
+                            </figure>
                             <div class="friend-meta">
-                                <h4><a href="time-line.html" title="">Allen</a></h4>
+                                <h4><a href="" title="">{{ user.user.username }}</a></h4>
+                                <!-- <a href="#" title="" class="underline">Accept</a> -->
+                                <a href="{% url 'friend:accept-request' user.user.username %}" title="" data-url="{% url 'friend:accept-request' user.user.username %}" class="btn btn-primary add-butn add-friend" data-ripple="" data-friend="{{ user.username }}">Accept</a>
+                                                   
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div><!-- who's following -->
+                <div class="widget">
+                    <h4 class="widget-title">Requests Sent</h4>
+
+                    <ul class="followers">
+                       {% for user in sent_request %}
+                        <li>
+                            <figure>
+                                {% if user != request.user and user.user_image %}
+                                <a href="#" title=""><img src="{{ user.user.user_image.url }}" alt=""></a>
+                                {% else %}
+                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                {% endif %}
+                            </figure>
+                            <div class="friend-meta">
+                                <h4><a href="" title="">{{ user }}</a></h4>
                                 <a href="#" title="" class="underline">Add Friend</a>
                             </div>
                         </li>
+                        {% endfor %}
                     </ul>
                 </div><!-- who's following -->
+               
                 <div class="widget friend-list stick-widget">
                     <h4 class="widget-title">Friends</h4>
                     <div id="searchDir"></div>
                     <ul id="people-list" class="friendz-list">
-                       
+                        {% for friend in friend_list %}
                         <li>
 
                             <figure>
-                                <img src="images/resources/friend-avatar2.jpg" alt="">
-                                <span class="status f-away"></span>
+                                {% if friend.user.username != request.user.username and friend.user.user_image %}
+                                <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                                {% else %}
+                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                {% endif %}
                             </figure>
                             <div class="friendz-meta">
-                                <a href="time-line.html">Sarah Loren</a>
+                                {% if friend.user.username == request.user.username %}
+                                <a href="time-line.html">{{ friend.friend.username }}</a>
+                                {% else %}
+                                <a href="time-line.html">{{ friend.user.username }}</a>
+                                {% endif %}
                                 <i><a href="https://wpkixx.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583a392a363d2b183f35393134763b3735">[email&#160;protected]</a></i>
                             </div>
                         </li>
+                        {% endfor %}
                     </ul>
-                    <div class="chat-box">
-                        <div class="chat-head">
-                            <span class="status f-online"></span>
-                            <h6>Bucky Barnes</h6>
-                            <div class="more">
-                                <span><i class="ti-more-alt"></i></span>
-                                <span class="close-mesage"><i class="ti-close"></i></span>
-                            </div>
-                        </div>
-                        <div class="chat-list">
-                            <ul>
-                                <li class="me">
-                                    <div class="chat-thumb"><img src="images/resources/chatlist1.jpg" alt=""></div>
-                                    <div class="notification-event">
-                                        <span class="chat-message-item">
-                                            Hi James! Please remember to buy the food for tomorrow! I’m gonna be handling the gifts and Jake’s gonna get the drinks
-                                        </span>
-                                        <span class="notification-date"><time datetime="2004-07-24T18:18" class="entry-date updated">Yesterday at 8:10pm</time></span>
-                                    </div>
-                                </li>
-                                <li class="you">
-                                    <div class="chat-thumb"><img src="images/resources/chatlist2.jpg" alt=""></div>
-                                    <div class="notification-event">
-                                        <span class="chat-message-item">
-                                            Hi James! Please remember to buy the food for tomorrow! I’m gonna be handling the gifts and Jake’s gonna get the drinks
-                                        </span>
-                                        <span class="notification-date"><time datetime="2004-07-24T18:18" class="entry-date updated">Yesterday at 8:10pm</time></span>
-                                    </div>
-                                </li>
-                                <li class="me">
-                                    <div class="chat-thumb"><img src="images/resources/chatlist1.jpg" alt=""></div>
-                                    <div class="notification-event">
-                                        <span class="chat-message-item">
-                                            Hi James! Please remember to buy the food for tomorrow! I’m gonna be handling the gifts and Jake’s gonna get the drinks
-                                        </span>
-                                        <span class="notification-date"><time datetime="2004-07-24T18:18" class="entry-date updated">Yesterday at 8:10pm</time></span>
-                                    </div>
-                                </li>
-                            </ul>
-                            <form class="text-box">
-                                <textarea placeholder="Post enter to post..."></textarea>
-                                <div class="add-smiles">
-                                    <span title="add icon" class="em em-expressionless"></span>
-                                </div>
-                                <div class="smiles-bunch">
-                                    <i class="em em---1"></i>
-                                    <i class="em em-smiley"></i>
-                                    <i class="em em-anguished"></i>
-                                    <i class="em em-laughing"></i>
-                                    <i class="em em-angry"></i>
-                                    <i class="em em-astonished"></i>
-                                    <i class="em em-blush"></i>
-                                    <i class="em em-disappointed"></i>
-                                    <i class="em em-worried"></i>
-                                    <i class="em em-kissing_heart"></i>
-                                    <i class="em em-rage"></i>
-                                    <i class="em em-stuck_out_tongue"></i>
-                                </div>
-                                <button type="submit"></button>
-                            </form>
-                        </div>
-                    </div>
+                    
                 </div><!-- friends list sidebar -->
 
             </aside>

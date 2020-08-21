@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('dashboard.urls')),
     path('',include('post.urls')),
     path('chat/', include('chat.urls')),
+    path('communications/', include('communications.urls')),
     path('friend/', include('friend.urls')),
 
 ]

@@ -1,5 +1,5 @@
 import json
-
+from django.shortcuts import render, redirect
 from dashboard.models import User
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -14,13 +14,24 @@ class FindFriendsListView(ListView):
     model = Friend
     context_object_name = 'users'
     template_name = "friend/find-friends.html"
-
-    def get_queryset(self):
+    
+    def get_context_data(self, **kwargs):
         current_user_friends = self.request.user.friends.values('id')
-        sent_request = list(Friend.objects.filter(user=self.request.user).values_list('friend_id', flat=True))
-        users = User.objects.exclude(id__in=current_user_friends).exclude(id__in=sent_request).exclude(id=self.request.user.id)
-        return users
-
+        sent_request = list(Friend.objects.filter(user=self.request.user,status='requested').values_list('friend_id__username', flat=True))
+        kwargs['sent_request']=sent_request
+        print(kwargs['sent_request'])
+        users = User.objects.exclude(id__in=current_user_friends).exclude(username=sent_request).exclude(id=self.request.user.id)
+        kwargs['users']=users
+        print(kwargs['users'])
+        recieve_request = Friend.objects.filter(friend=self.request.user,status='requested')
+        kwargs['recieve_request']=recieve_request
+        print(kwargs['recieve_request'])
+        
+        friend_list_r = Friend.objects.filter(friend=self.request.user,status='friend')
+        friend_list_s = Friend.objects.filter(user=self.request.user,status='friend')
+        kwargs['friend_list']=friend_list_r|friend_list_s
+        print(kwargs['friend_list'])
+        return kwargs
 
 def send_request(request, username=None):
     if username is not None:
@@ -40,7 +51,7 @@ def send_request(request, username=None):
             'status': True,
             'message': "Request sent.",
         }
-        return JsonResponse(data)
+        return redirect('friend:find-friends')
     else:
         pass
 
@@ -57,4 +68,4 @@ def accept_request(request, friend=None):
             'status': True,
             'message': "You accepted friend request",
         }
-        return JsonResponse(data)
+        return redirect('friend:find-friends')

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'includes/sidebar.html' %}
+        <div class="col-md-6" style="margin-top:40px">
+                {% block center_content %}
+                <div class="central-meta">
+                    <div class="messages">
+                        <h5 class="f-title"><i class="ti-bell"></i>All Messages </h5>
+                        <div class="message-box">
+                            <ul class="peoples">
+                                {% if friends is not None %}
+                                {% for friend in friends %}
+                                    <li>
+                                        <figure>
+                                            {% if friend.user.user_image %}
+                                            <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                                            {% else %}
+                                            <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                            {% endif %}
+                                        </figure>
+                                        <div class="people-name">
+                                            {% if friend.user.username == request.user.username %}
+                                                <a href="{% url 'communications:messages-with-one-friend' friend.friend.username %}">{{ friend.friend.username }}</a>
+                                            {% else %}
+                                                <a href="{% url 'communications:messages-with-one-friend' friend.user.username %}">{{ friend.user.username }}</a>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                                {% else %}
+                                <li><p>No Chat Found.Select a friend and start conversation</p></li>
+                                
+                                {% endif %}
+                            </ul>
+                            
+                    </div>
+                </div>
+            </div><!-- centerl meta -->
+            {% endblock%}
+    </div>
+    </div>
+</div>
+{% endblock %}

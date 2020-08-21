@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'chat',
     'friend',
     'rest_framework',
+    'communications',
 ]
 
 MIDDLEWARE = [
