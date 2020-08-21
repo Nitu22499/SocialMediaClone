@@ -31,15 +31,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms',
     'dashboard',
     'post',
+    'chat',
+    'friend',
+    'rest_framework',
+    'communications',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +77,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'SocialNetwork.wsgi.application'
+
+# Channels
+ASGI_APPLICATION = "SocialNetwork.routing.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 
 
 # Database

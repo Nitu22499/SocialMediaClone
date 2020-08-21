@@ -4077,7 +4077,7 @@ a.forgot-pwd {
     max-height: 462px;
     padding-left: 0;
     position: relative;
-    width: 200px;
+    width: 250px;
 }
 
 .peoples > li {
@@ -5309,6 +5309,7 @@ canvas {
 }
 
 .row.widget-page aside.sidebar {
+    margin-top:40px;
     width: 100%;
 }
 
@@ -9668,7 +9669,9 @@ aside.sidebar.full-style {
 .sidebar.full-style .widget > ul {
     padding: 0;
 }
-
+aside.sidebar.static{
+    margin-top:40px;
+}
 .full-style .forum-static > li {
     border: 1px solid #eaeaea;
     border-collapse: collapse;

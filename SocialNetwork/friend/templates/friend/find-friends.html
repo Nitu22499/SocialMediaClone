@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% include 'includes/sidebar.html' %}
+            <div class="col-md-6" style="margin-top:40px">
+                {% block center_content %}
+                    <div class="central-meta">
+                        <div class="frnds">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item"><a class="active" href="#frends" data-toggle="tab">Find Friends</a></li>                                          
+                            </ul>
+                                <div id="searchDir"></div>
+                                <div class="tab-content">
+                                    <div class="tab-pane active fade show " id="frends">
+                                        <ul class="nearby-contct">
+                                            {% for user in users %}
+                                            <li>
+                                                <div class="nearly-pepls">
+                                                    <figure>
+                                                        {% if user.user_image %}
+                                                        <a href="#" title=""><img src="{{ user.user_image.url }}" alt=""></a>
+                                                        {% else %}
+                                                        <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                                        {% endif %}
+                                                    </figure>
+                                                    <div class="pepl-info">
+                                                        <h4><a href="#" title="">{{ user.username }}</a></h4>
+                                                            <!-- <span>Software Engineer</span> -->
+                                                            <a href="{% url 'friend:send-request' user.username %}" title="" data-url="{% url 'friend:send-request' user.username %}" class="btn btn-primary add-butn add-friend" data-ripple="" data-friend="{{ user.username }}">Add Friend</a>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    <div class="lodmore">
+                                    <button class="btn-view btn-load-more"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- centerl meta -->
+                {% endblock%}
+            </div>
+        <div class="col-md-3">
+            {% block right-sidebar %}
+            
+            <aside class="sidebar static">
+                <div class="widget">
+                    <h4 class="widget-title">Pending Request</h4>
+                    {% for user in recieve_request %}
+                    <ul class="followers">
+                       
+                        <li>
+                            <figure>
+                                {% if user.user_image %}
+                                <a href="#" title=""><img src="{{ user.user_image.url }}" alt=""></a>
+                                {% else %}
+                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                {% endif %}
+                            </figure>
+                            <div class="friend-meta">
+                                <h4><a href="" title="">{{ user.user.username }}</a></h4>
+                                <!-- <a href="#" title="" class="underline">Accept</a> -->
+                                <a href="{% url 'friend:accept-request' user.user.username %}" title="" data-url="{% url 'friend:accept-request' user.user.username %}" class="btn btn-primary add-butn add-friend" data-ripple="" data-friend="{{ user.username }}">Accept</a>
+                                                   
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div><!-- who's following -->
+                <div class="widget">
+                    <h4 class="widget-title">Requests Sent</h4>
+
+                    <ul class="followers">
+                       {% for user in sent_request %}
+                        <li>
+                            <figure>
+                                {% if user != request.user and user.user_image %}
+                                <a href="#" title=""><img src="{{ user.user.user_image.url }}" alt=""></a>
+                                {% else %}
+                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                {% endif %}
+                            </figure>
+                            <div class="friend-meta">
+                                <h4><a href="" title="">{{ user }}</a></h4>
+                                <a href="#" title="" class="underline">Add Friend</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div><!-- who's following -->
+               
+                <div class="widget friend-list stick-widget">
+                    <h4 class="widget-title">Friends</h4>
+                    <div id="searchDir"></div>
+                    <ul id="people-list" class="friendz-list">
+                        {% for friend in friend_list %}
+                        <li>
+
+                            <figure>
+                                {% if friend.user.username != request.user.username and friend.user.user_image %}
+                                <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                                {% else %}
+                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                {% endif %}
+                            </figure>
+                            <div class="friendz-meta">
+                                {% if friend.user.username == request.user.username %}
+                                <a href="time-line.html">{{ friend.friend.username }}</a>
+                                {% else %}
+                                <a href="time-line.html">{{ friend.user.username }}</a>
+                                {% endif %}
+                                <i><a href="https://wpkixx.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583a392a363d2b183f35393134763b3735">[email&#160;protected]</a></i>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                </div><!-- friends list sidebar -->
+
+            </aside>
+            {% endblock %}
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
