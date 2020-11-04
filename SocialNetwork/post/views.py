@@ -22,7 +22,8 @@ class HomeView(CreateView):
         return super(HomeView, self).form_valid(form)
                 
     def get_context_data(self, **kwargs):
-        posts = Post.objects.all()
+        posts = Post.objects.all().order_by('-post_date')
+        print(posts)
         kwargs['posts'] = posts
         print(kwargs['posts'])
         return super().get_context_data(**kwargs)

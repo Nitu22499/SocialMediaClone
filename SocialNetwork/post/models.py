@@ -8,9 +8,16 @@ class Post(models.Model):
     post_image = models.ImageField(upload_to ='documents/')
     post_body = models.TextField(blank = True)
     post_date = models.DateTimeField(default=timezone.now)
+    
+
+    class Meta:
+        ordering = ['-post_date',]
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(blank=False)
     created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-created_at',]

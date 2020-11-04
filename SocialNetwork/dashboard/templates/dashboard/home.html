@@ -51,7 +51,7 @@
                             <div class="user-post">
                                 <div class="friend-info">
                                     <figure>
-                                        {% if post.user.user_image.url %}
+                                        {% if post.user.user_image %}
                                             <img src="{{ post.user.user_image.url }}" alt="">
                                         {% else %}
                                             <img src="{% static 'images/default.jpg' %}"  alt="">
@@ -129,10 +129,10 @@
                                         {% for comment in post.comments.all %}
                                             <li>
                                                 <div class="comet-avatar">
-                                                    {% if comment.user.profile.profile_image.url %}
-                                                        <img src="#" alt="">
-                                                    {% else %}
+                                                    {% if comment.user.user_image %}
                                                         <img src="{{ comment.user.user_image.url }}" alt="">
+                                                    {% else %}
+                                                        <img src="{% static 'images/default.jpg' %}" alt="">
                                                     {% endif %}
                                                 </div>
                                                 <div class="we-comment">
@@ -152,7 +152,7 @@
                                             <div class="post-comt-box">
                                                 <form method="post"  action="{% url 'post:comment-create' post.id %}">
                                                     {% csrf_token %}
-                                                    <input placeholder="Post your comment" id="comment-form" name="content">
+                                                    <input placeholder="Post your comment" id="comment-form" name="content" required>
                                                     
                                                     <button type="submit" class = "btn btn-primary">Comment</button>
                                                    

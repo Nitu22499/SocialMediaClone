@@ -8,174 +8,96 @@
         {% include 'includes/sidebar.html' %}
         <div class="col-md-8" style="margin-top:40px">
             {% block center_content %}
-                <div class="central-meta">
-                                    <div class="messages">
-                                        <h5 class="f-title"><i class="fa fa-bell" aria-hidden="true"></i>All Messages </h5>
-                                        <div class="message-box">
-                                            <ul class="peoples">
-                                                {% for friend in friends %}
-                                                    <li>
-                                                        <figure>
-                                                            {% if friend.user.username != request.user.username and friend.user.user_image %}
-                                                            <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
-                                                            {% else %}
-                                                            <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
-                                                            {% endif %}
-                                                        </figure>
-                                                        <div class="people-name">
-                                                            {% if friend.user.username == request.user.username %}
-                                                                <a href="{% url 'communications:messages-with-one-friend' friend.friend.username %}">{{ friend.friend.username }}</a>
-                                                            {% else %}
-                                                                <a href="{% url 'communications:messages-with-one-friend' friend.user.username %}">{{ friend.user.username }}</a>
-                                                            {% endif %}
-                                                        </div>
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                            <div class="peoples-mesg-box">
-                                                <div class="conversation-head">
-                                                    <figure>
-                                                        {% if friend.user.user_image %}
-                                                        <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
-                                                        {% else %}
-                                                        <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
-                                                        {% endif %}
-                                                    </figure>
-                                                    <span>Chat with {{ friend_name_json|slice:"1:-1" }}</span>
-                                                </div>
-                                                <ul class="chatting-area">
-                                                </ul>
-                                                <div class="message-text-container">
-                                                    <form onsubmit=" return false;">
-                                                        <textarea id="chat-message-input"></textarea>
-                                                        <em id="typing"></em>
-                                                        <button title="send" id="chat-message-submit"><i class="fa fa-paper-plane btn btn-primary" aria-hidden="true"></i></button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+            <div class="central-meta">
+                <div class="messages">
+                    <h5 class="f-title"><i class="fa fa-bell" aria-hidden="true"></i>All Messages </h5>
+                    <div class="message-box">
+                        <ul class="peoples">
+                            {% for friend in friends %}
+                            <li>
+                                <figure>
+                                    {% if friend.user.username != request.user.username and friend.user.user_image %}
+                                    <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                                    {% else %}
+                                    <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                    {% endif %}
+                                </figure>
+                                <div class="people-name">
+                                    {% if friend.user.username == request.user.username %}
+                                    <a href="{% url 'communications:messages-with-one-friend' friend.friend.username %}">{{ friend.friend.username }}</a>
+                                    {% else %}
+                                    <a href="{% url 'communications:messages-with-one-friend' friend.user.username %}">{{ friend.user.username }}</a>
+                                    {% endif %}
                                 </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="peoples-mesg-box">
+                            <div class="conversation-head">
+                                <figure>
+                                    {% if friend.user.user_image %}
+                                    <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                                    {% else %}
+                                    <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                    {% endif %}
+                                </figure>
+                                <span>Chat with {{ friend_name_json|slice:"1:-1" }}</span>
                             </div>
-                            {% endblock %}
-                            
+                            <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+                            <div class="message-text-container">
+                                <form onsubmit=" return false;">
+                                    <textarea id="chat-message-input"></textarea>
+                                    <em id="typing"></em>
+                                    <button title="send" id="chat-message-submit"><i class="fa fa-paper-plane btn btn-primary" aria-hidden="true"></i></button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            
-
-
-
+            </div>
+             {% endblock %}
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 {% block scripts %}
 
-    <script>
-        $(document).ready(function () {
-            let messages = $('.chatting-area');
-            {#console.log(messages.prop("scrollHeight"));#}
-            messages.animate({
-                scrollTop: messages.offset().top + 50
-            }, 'slow');
-        });
+<script>
 
         let friendName = {{ friend_name_json }};
         let username = {{ username }};
 
-        let chatSocket = new ReconnectingWebSocket(
+        let chatSocket = new WebSocket(
             'ws://' + window.location.host +
             '/ws/chat/' + friendName + '/');
 
-        chatSocket.onopen = function (e) {
-            fetchMessages();
+
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#chat-log').value += (data.message + '\n');
         };
 
-        chatSocket.onmessage = function (e) {
-            let data = JSON.parse(e.data);
-            if (data['command'] === 'messages') {
-                for (let i = 0; i < data['messages'].length; i++) {
-                    createMessage(data['messages'][i]);
-                }
-            } else if (data['command'] === 'new_message') {
-                createMessage(data['message']);
-            } else if (data['command'] === 'typing_start') {
-                if (data["message"] !== friendName) {
-                    document.getElementById("typing").innerHTML = data["message"] + " is typing";
-                }
-            } else if (data['command'] === 'typing_stop') {
-                document.getElementById("typing").innerHTML = "";
-            }
-        };
-
-        document.querySelector('#chat-message-input').addEventListener("keypress", function () {
-            {#chatSocket.emit("typing", username);#}
-            chatSocket.send(JSON.stringify({
-                'command': 'typing_start',
-                'from': friendName,
-            }));
-        });
-
-        document.querySelector('#chat-message-input').addEventListener("keyup", function () {
-            setTimeout(() => {
-                chatSocket.send(JSON.stringify({
-                    'command': 'typing_stop',
-                }));
-            }, 300);
-        });
-
-        {% comment %}chatSocket.ontyping = function (data) {
-            console.log(data);
-        };{% endcomment %}
-
-        chatSocket.onclose = function (e) {
+        chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
 
-        document.querySelector('#chat-message-input').onkeyup = function (e) {
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
             if (e.keyCode === 13) {  // enter, return
                 document.querySelector('#chat-message-submit').click();
             }
         };
 
-        document.querySelector('#chat-message-submit').onclick = function (e) {
-            let messageInputDom = document.getElementById('chat-message-input');
-            let message = messageInputDom.value;
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'command': 'new_message',
-                'message': message,
-                'from': username,
-                'friend': friendName
+                'message': message
             }));
-
             messageInputDom.value = '';
-
-            let messages = $('#messages');
-            messages.animate({
-                scrollTop: messages.offset().top + 50
-            }, 1000);
         };
-
-        function fetchMessages() {
-            chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'author': username, 'friend': friendName}));
-        }
-
-        function createMessage(data) {
-            let author = data['author'];
-            let user_class = "";
-
-            if (author === username) {
-                user_class = "me";
-            } else {
-                user_class = "you";
-            }
-
-            let message = `<li class="${user_class}">
-                                <figure><img src="images/resources/userlist-1.jpg" alt=""></figure>
-                                <p>${data.content}</p>
-                            </li>`;
-
-            $('.chatting-area').append(message);
-        }
     </script>
 
 {% endblock %}

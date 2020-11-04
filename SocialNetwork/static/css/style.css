@@ -10158,3 +10158,20 @@ div [class="card-body-info"]{
 .school-admin-links .material-icons, .school-admin-links .material-icons-outlined{
     font-size: 12px;
 }
+
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:darkblue;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px ;
+}
+
+.my-float{
+	margin-top:22px;
+}

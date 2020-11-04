@@ -5,9 +5,10 @@ from dashboard.models import User
 from django.utils.timezone import now
 
 
-class Friend(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # who sent the request
-    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends')  # who will receive the request
+
+class FriendRequest(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)  # who sent the request
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends')  # who will receive the request
     # sender = models.CharField(max_length=20, default='requested')
     status = models.CharField(max_length=20, default='requested')
     created_at = models.DateTimeField(default=now)

@@ -62,9 +62,9 @@
                                 {% endif %}
                             </figure>
                             <div class="friend-meta">
-                                <h4><a href="" title="">{{ user.user.username }}</a></h4>
+                                <h4><a href="" title="">{{ user.sender.username }}</a></h4>
                                 <!-- <a href="#" title="" class="underline">Accept</a> -->
-                                <a href="{% url 'friend:accept-request' user.user.username %}" title="" data-url="{% url 'friend:accept-request' user.user.username %}" class="btn btn-primary add-butn add-friend" data-ripple="" data-friend="{{ user.username }}">Accept</a>
+                                <a href="{% url 'friend:accept-request' user.sender.username %}" title="" data-url="{% url 'friend:accept-request' user.sender.username %}" class="btn btn-primary add-butn add-friend" data-ripple="" data-friend="{{ user.username }}">Accept</a>
                                                    
                             </div>
                         </li>
@@ -102,16 +102,16 @@
 
                             <figure>
                                 {% if friend.user.username != request.user.username and friend.user.user_image %}
-                                <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                                <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
                                 {% else %}
                                 <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
                                 {% endif %}
                             </figure>
                             <div class="friendz-meta">
-                                {% if friend.user.username == request.user.username %}
-                                <a href="time-line.html">{{ friend.friend.username }}</a>
+                                {% if friend.sender.username == request.user.username %}
+                                <a href="time-line.html">{{ friend.receiver.username }}</a>
                                 {% else %}
-                                <a href="time-line.html">{{ friend.user.username }}</a>
+                                <a href="time-line.html">{{ friend.sender.username }}</a>
                                 {% endif %}
                                 <i><a href="https://wpkixx.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583a392a363d2b183f35393134763b3735">[email&#160;protected]</a></i>
                             </div>
