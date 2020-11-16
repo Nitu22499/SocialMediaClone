@@ -1,0 +1,27 @@
+<div class="widget friend-list stick-widget">
+    <h4 class="widget-title">Friends</h4>
+    <div id="searchDir"></div>
+    <ul id="people-list" class="friendz-list">
+        {% for friend in friend_list %}
+        <li>
+
+            <figure>
+                {% if friend.user.username != request.user.username and friend.user.user_image %}
+                <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                {% else %}
+                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                {% endif %}
+            </figure>
+            <div class="friendz-meta">
+                {% if friend.user.username == request.user.username %}
+                <a href="time-line.html">{{ friend.friend.username }}</a>
+                {% else %}
+                <a href="time-line.html">{{ friend.user.username }}</a>
+                {% endif %}
+                <i><a href="https://wpkixx.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583a392a363d2b183f35393134763b3735">[email&#160;protected]</a></i>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    
+</div><!-- friends list sidebar -->

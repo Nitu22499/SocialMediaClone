@@ -12,26 +12,74 @@
                         <div class="message-box">
                             <ul class="peoples">
                                 {% if friends is not None %}
-                                {% for friend in friends %}
+                                {% for friend in friend_list %}
                                     <li>
                                         <figure>
                                             {% if friend.user.user_image %}
-                                            <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                                            <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
                                             {% else %}
                                             <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
                                             {% endif %}
                                         </figure>
                                         <div class="people-name">
                                             {% if friend.user.username == request.user.username %}
-                                                <a href="{% url 'communications:messages-with-one-friend' friend.friend.username %}">{{ friend.friend.username }}</a>
+                                                <a href="{% url 'communications:messages-with-one-friend' friend.receiver.username %}">{{ friend.receiver.username }}</a>
                                             {% else %}
-                                                <a href="{% url 'communications:messages-with-one-friend' friend.user.username %}">{{ friend.user.username }}</a>
+                                                <a href="{% url 'communications:messages-with-one-friend' friend.sender.username %}">{{ friend.sender.username }}</a>
                                             {% endif %}
                                         </div>
                                     </li>
                                 {% endfor %}
                                 {% else %}
                                 <li><p>No Chat Found.Select a friend and start conversation</p></li>
+                                <a href="#" class="float" data-toggle="modal" data-target="#myModal">
+                                    <i class="fa fa-plus my-float"></i>
+                                </a>
+                                <div class="modal fade" id="myModal" role="dialog">
+                                    <div class="modal-dialog">
+                                    
+                                      <!-- Modal content-->
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h4 class="modal-title">Chat with ...</h4>
+                                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                          <!-- Friendlist for starting chat with  -->
+                                          <div class="widget friend-list stick-widget">
+                                            <div id="searchDir"></div>
+                                            <ul id="people-list" class="friendz-list">
+                                                {% for friend in friend_list %}
+                                                <li>
+                                        
+                                                    <figure>
+                                                        {% if friend.receiver.username != request.sender.username and friend.sender.user_image %}
+                                                        <a href="{% url 'communications:messages-with-one-friend' friend.sender.username %}" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
+                                                        {% else %}
+                                                        <a href="{% url 'communications:messages-with-one-friend' friend.sender.username %}" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                                        {% endif %}
+                                                    </figure>
+                                                    <div class="friendz-meta">
+                                                        {% if friend.sender.username == request.sender.username %}
+                                                        <a href="{% url 'communications:messages-with-one-friend' friend.receiver.username %}">{{ friend.receiver.username }}</a>
+                                                        {% else %}
+                                                        <a href="{% url 'communications:messages-with-one-friend' friend.sender.username %}">{{ friend.sender.username }}</a>
+                                                        {% endif %}
+                                                    </div>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                            
+                                        </div><!-- friends list sidebar -->
+                                        <!-- Friendlist for starting chat with  -->
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
                                 
                                 {% endif %}
                             </ul>

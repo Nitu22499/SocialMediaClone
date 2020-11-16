@@ -1,5 +1,5 @@
 from django.contrib import admin
-from friend.models import Friend,CustomNotification
+from friend.models import FriendRequest,CustomNotification
 # Register your models here.
-admin.site.register(Friend)
+admin.site.register(FriendRequest)
 admin.site.register(CustomNotification)

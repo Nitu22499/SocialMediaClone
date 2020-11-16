@@ -51,7 +51,7 @@
                             <div class="user-post">
                                 <div class="friend-info">
                                     <figure>
-                                        {% if post.user.user_image.url %}
+                                        {% if post.user.user_image %}
                                             <img src="{{ post.user.user_image.url }}" alt="">
                                         {% else %}
                                             <img src="{% static 'images/default.jpg' %}"  alt="">
@@ -59,29 +59,66 @@
                                     </figure>
                                     <div class="friend-name">
                                         <ins><a href="#" title="">{{ post.user.username }}</a></ins>
-                                        <span>published: {{ post.post_date|timesince }} ago</span>
+                                        <div class="row">
+                                            <div class="col-10">published: {{ post.post_date|timesince }} ago</div>
+                                            {% if request.user.username == post.user.username %}
+                                            <div class="col-2">
+                                            <a href="#" data-toggle="modal" data-target="#myDeleteModal">
+                                                <button class="btn btn-danger">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </button></a>
+                                            </div>
+                                        
+                                            <div class="modal fade" id="myDeleteModal" role="dialog">
+                                                <div class="modal-dialog">
+                                                
+                                                  <!-- Modal content-->
+                                                  <div class="modal-content" >
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Delete Post</h4>
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                          </div>
+                                                          <div class="modal-body">
+                                                           Are you sure you want to delete the post?
+                                                          </div>
+                                                          <div class="modal-footer">
+                                                            <a href="{% url 'post:post-delete' post.pk %}" class="btn btn-danger" >yes</a>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                                          </div>
+                                                      
+                                                </div><!-- Modal content-->
+                                                </div>
+                                              </div>
+                                              {% endif %}
+                                        </div>
+                                        
                                     </div>
                                     <div class="post-meta">
                                         <img src="#" alt="">
+                                        
+                                        <div class="description">
+                                            <img src="{{ post.post_image.url }}"width="600" height="250">
+                                            <p>{{ post.post_body }}</p>
+                                        </div>
                                         <div class="we-video-info">
                                             <ul>
-                                                <!-- <li>
+                                                <li>
                                                     <span class="comment" data-toggle="tooltip" title="Comments">
-                                                        <i class="fa fa-comments-o"></i>
+                                                        <i class="fa fa-comments" aria-hidden="true"></i>
                                                         <ins>{{ post.comments.count }}</ins>
                                                     </span>
-                                                </li> -->
-                                                <li>
-                                                    <span class="like" data-toggle="tooltip" title="like">
-                                                        <i class="ti-heart"></i>
-                                                        <ins>2.2k</ins>
-                                                    </span>
                                                 </li>
+                                                
                                                 <li>
-                                                    <span class="dislike" data-toggle="tooltip" title="dislike">
-                                                        <i class="ti-heart-broken"></i>
-                                                        <ins>200</ins>
-                                                    </span>
+                                                    <form method="post"  action="{% url 'post:post_like' %}" id='{{post.id}}'>
+                                                        {% csrf_token %}  
+                                                        <input type="hidden" name="post_id" value="{{post.id}}">    
+                                                        {% if user not in post.liked.all %}                                               
+                                                        <button type="submit"><span class="like" data-toggle="tooltip" title="like"><i class="fas fa-thumbs-up"></i><ins>{{ post.liked.count }}</ins></span></button>                                                           
+                                                        {% else %}
+                                                        <button type="submit"><span class="dislike" data-toggle="tooltip" title="dislike"><i class="fas fa-thumbs-down"></i><ins>{{ post.liked.count }}</ins></span></button> 
+                                                        {% endif %}
+                                                    </form> 
                                                 </li>
                                                 <li class="social-media">
                                                     <div class="menu">
@@ -118,10 +155,6 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div class="description">
-                                            <img src="{{ post.post_image.url }}"width="600" height="250">
-                                            <p>{{ post.post_body }}</p>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="coment-area">
@@ -129,10 +162,10 @@
                                         {% for comment in post.comments.all %}
                                             <li>
                                                 <div class="comet-avatar">
-                                                    {% if comment.user.profile.profile_image.url %}
-                                                        <img src="#" alt="">
-                                                    {% else %}
+                                                    {% if comment.user.user_image %}
                                                         <img src="{{ comment.user.user_image.url }}" alt="">
+                                                    {% else %}
+                                                        <img src="{% static 'images/default.jpg' %}" alt="">
                                                     {% endif %}
                                                 </div>
                                                 <div class="we-comment">
@@ -152,7 +185,7 @@
                                             <div class="post-comt-box">
                                                 <form method="post"  action="{% url 'post:comment-create' post.id %}">
                                                     {% csrf_token %}
-                                                    <input placeholder="Post your comment" id="comment-form" name="content">
+                                                    <input placeholder="Post your comment" id="comment-form" name="content" required>
                                                     
                                                     <button type="submit" class = "btn btn-primary">Comment</button>
                                                    
