@@ -10,12 +10,12 @@ from friend.models import FriendRequest
 from . models import Room
 
 
-def all_messages(request):
-    friends_one = FriendRequest.objects.filter(receiver=request.user, status='friend')
-    friends_two = FriendRequest.objects.filter(sender=request.user, status='friend')
-    friends = friends_one | friends_two
+# def all_messages(request):
+#     friends_one = FriendRequest.objects.filter(receiver=request.user, status='friend')
+#     friends_two = FriendRequest.objects.filter(sender=request.user, status='friend')
+#     friends = friends_one | friends_two
     # room1 = Room.objects.all()
-    return render(request, "communications/all-messages.html", {'friend': friends})
+    # return render(request, "communications/all-messages.html", {'friend': friends})
     # return render(request, "communications/all-messages.html", {'room': room1})
 
 
@@ -26,9 +26,11 @@ class All_messages(TemplateView):
     template_name = "communications/all-messages.html"
 
     def get_context_data(self,**kwargs):
-        
-        friend_list = FriendRequest.objects.filter(receiver=self.request.user,status='friend')
-        kwargs['friend_list']=friend_list
+        friends_one = FriendRequest.objects.filter(receiver=self.request.user, status='friend')
+        friends_two = FriendRequest.objects.filter(sender=self.request.user, status='friend')
+        # friend_list = FriendRequest.objects.filter(receiver=self.request.user,status='friend')
+        kwargs['friend_list'] = friends_one | friends_two
+        print(kwargs['friend_list'])
         return kwargs
 
 

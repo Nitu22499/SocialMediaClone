@@ -16,17 +16,17 @@
                             {% for friend in friends %}
                             <li>
                                 <figure>
-                                    {% if friend.user.username != request.user.username and friend.user.user_image %}
-                                    <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                                    {% if friend.sender.username != request.user.username and friend.sender.user_image %}
+                                    <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
                                     {% else %}
                                     <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
                                     {% endif %}
                                 </figure>
                                 <div class="people-name">
-                                    {% if friend.user.username == request.user.username %}
-                                    <a href="{% url 'communications:messages-with-one-friend' friend.friend.username %}">{{ friend.friend.username }}</a>
+                                    {% if friend.sender.username == request.user.username %}
+                                    <a href="{% url 'communications:messages-with-one-friend' friend.receiver.username %}">{{ friend.receiver.username }}</a>
                                     {% else %}
-                                    <a href="{% url 'communications:messages-with-one-friend' friend.user.username %}">{{ friend.user.username }}</a>
+                                    <a href="{% url 'communications:messages-with-one-friend' friend.sender.username %}">{{ friend.sender.username }}</a>
                                     {% endif %}
                                 </div>
                             </li>
@@ -35,8 +35,8 @@
                         <div class="peoples-mesg-box">
                             <div class="conversation-head">
                                 <figure>
-                                    {% if friend.user.user_image %}
-                                    <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
+                                    {% if friend.sender.user_image %}
+                                    <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
                                     {% else %}
                                     <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
                                     {% endif %}
@@ -46,6 +46,9 @@
                             <textarea id="chat-log" cols="100" rows="20"></textarea><br>
                             <div class="message-text-container">
                                 <form onsubmit=" return false;">
+                                    <div class="msg-box msg-box--background" >
+                                        <div id="new-message-chat"></div>
+                                    </div>
                                     <textarea id="chat-message-input"></textarea>
                                     <em id="typing"></em>
                                     <button title="send" id="chat-message-submit"><i class="fa fa-paper-plane btn btn-primary" aria-hidden="true"></i></button>
