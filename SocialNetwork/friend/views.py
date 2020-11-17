@@ -77,3 +77,5 @@ def accept_request(request, friend=None):
             'message': "You accepted friend request",
         }
         return redirect('friend:find-friends')
+
+

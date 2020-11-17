@@ -9,6 +9,7 @@ urlpatterns = [
     path('', Login.as_view(), name='login'),
     path('logout/', Logout.as_view(), name = 'logout'),
     path('profile/', ProfileView.as_view(), name = 'profile'),
+    # path('<slug:searchfriend>/', searchUser, name = 'search'),
 
 
 ]

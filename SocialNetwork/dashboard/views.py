@@ -35,6 +35,9 @@ class ProfileView(TemplateView):
     template_name = 'dashboard/profile-view.html'
 
     
+def searchUser(request,searchfriend):
+    user = User.objects.filter(username=searchfriend)
+    return render(request,'post/home.html',{'user':user})
 
 # def home(request):
 #     return render(request,'dashboard/home.html',{})

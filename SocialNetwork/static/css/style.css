@@ -725,7 +725,7 @@ header.sticky {
     position: absolute;
     right: -15px;
     top: 42px;
-    width: 300px;
+    width: 100%;
     opacity: 0;
     visibility: hidden;
 }
@@ -4695,7 +4695,7 @@ canvas {
 
 /*--- main menu ---*/
 
-.top-area > ul.main-menu > li ul {
+/* .top-area > ul.main-menu > li ul {
     left: 0;
     list-style: outside none none;
     padding-left: 0;
@@ -4710,9 +4710,9 @@ canvas {
     transition: all 0.2s linear 0s;
     border-radius: 0 0 5px 5px;
     border-top: 2px solid;
-}
+} */
 
-.top-area > ul.main-menu > li:hover > ul {
+/* .top-area > ul.main-menu > li:hover > ul {
     opacity: 1;
     visibility: visible;
 }
@@ -4736,9 +4736,9 @@ canvas {
     font-weight: 700;
     text-transform: capitalize;
     letter-spacing: 0.3px;
-}
+} */
 
-.top-area > ul.main-menu > li::after {
+/* .top-area > ul.main-menu > li::after {
     content: "";
     font-family: fontawesome;
     font-size: 13px;
@@ -4767,7 +4767,7 @@ canvas {
     background: #f5f5f5 none repeat scroll 0 0;
     padding-left: 17px;
 }
-
+ */
 
 /*--- side chat message box ---*/
 
@@ -5320,7 +5320,7 @@ canvas {
     float: left;
     margin-top: 7px;
     text-align: left;
-    width: 32%;
+    width: 100%;
 }
 
 .top-search form {
