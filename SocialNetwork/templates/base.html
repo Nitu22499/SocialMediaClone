@@ -40,8 +40,9 @@
           <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto mb-2 mb-lg-0 ">
               <div class="top-search">
-                <form method="get" class="form-inline" action="/">
-                  <input class="form-control mr-sm-2" type="text" placeholder="Search" name="searchfriend">
+                <form method="get" class="form-inline" action="{% url 'dashboard:search' %}">
+                  <input class="form-control mr-sm-2" type="text" placeholder="Search" name="searchfriend" value="searchfriend">
+                  {{searchfriend}}
                     <button data-ripple><i class="fa fa-search"></i></button>
                 </form>
             </div>             
@@ -62,7 +63,7 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-current="page" href="#">{{request.user.username}}</a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'dashboard:profile' %}">View Profile</a>
+                    <a class="dropdown-item" href="{% url 'dashboard:profile' request.user %}">View Profile</a>
                     <a class="dropdown-item" href="{% url 'dashboard:logout' %}">Logout</a>
                   </div>
                 </li>

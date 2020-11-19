@@ -75,6 +75,25 @@ p {
     color: #8c8b8b;
 }
 
+.we-comet li{ 
+    display:none;
+}
+
+#loadMore {
+    color:green;
+    cursor:pointer;
+}
+#loadMore:hover {
+    color:black;
+}
+#showLess {
+    color:red;
+    cursor:pointer;
+}
+#showLess:hover {
+    color:black;
+}
+
 a,
 a:hover,
 a:focus,
@@ -893,6 +912,7 @@ header.sticky {
 figure[class ="user_profile_image"]>img{
     border-radius: 100%;
 }
+
 .edit-phto {
     background: rgba(0, 0, 0, 0.7) none repeat scroll 0 0;
     bottom: 100px;
@@ -1485,6 +1505,12 @@ form button {
     transition: all 0.2s linear 0s;
 }
 
+.dislike{
+    color: red;
+}
+.like{
+    color: green;
+}
 .we-video-info > ul li span ins {
     font-size: 11px;
     left: 20px;

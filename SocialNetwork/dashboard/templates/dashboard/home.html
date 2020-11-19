@@ -110,13 +110,13 @@
                                                 </li>
                                                 
                                                 <li>
-                                                    <form method="post"  action="{% url 'post:post_like' %}" id='{{post.id}}'>
+                                                    <form method="post"  class='like-form' action="{% url 'post:post_like' %}" id='{{post.id}}' name='{{post.id}}'>
                                                         {% csrf_token %}  
                                                         <input type="hidden" name="post_id" value="{{post.id}}">    
                                                         {% if user not in post.liked.all %}                                               
-                                                        <button type="submit"><span class="like" data-toggle="tooltip" title="like"><i class="fas fa-thumbs-up"></i><ins>{{ post.liked.count }}</ins></span></button>                                                           
+                                                        <button id="like{{post.id}}" type="submit"><span class="like" data-toggle="tooltip" title="like"><i class="fas fa-thumbs-up like"></i><ins class="like-icon">{{ post.liked.count }}</ins></span></button>                                                           
                                                         {% else %}
-                                                        <button type="submit"><span class="dislike" data-toggle="tooltip" title="dislike"><i class="fas fa-thumbs-down"></i><ins>{{ post.liked.count }}</ins></span></button> 
+                                                        <button id="like{{post.id}}" type="submit"><span class="dislike" data-toggle="tooltip" title="dislike"><i class="fas fa-thumbs-down dislike"></i><ins class="dislike-icon">{{ post.liked.count }}</ins></span></button> 
                                                         {% endif %}
                                                     </form> 
                                                 </li>
@@ -157,42 +157,52 @@
                                         </div>
                                     </div>
                                 </div>
+                                
                                 <div class="coment-area">
                                     <ul class="we-comet">
-                                        {% for comment in post.comments.all %}
-                                            <li>
-                                                <div class="comet-avatar">
-                                                    {% if comment.user.user_image %}
-                                                        <img src="{{ comment.user.user_image.url }}" alt="">
-                                                    {% else %}
-                                                        <img src="{% static 'images/default.jpg' %}" alt="">
-                                                    {% endif %}
-                                                </div>
-                                                <div class="we-comment">
-                                                    <div class="coment-head">
-                                                        <h5><a href="#" title="">{{ comment.user.username }}</a></h5>
-                                                        <span>{{ comment.created_at|timesince }} ago</span>
-                                                        <a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+                                            {% for comment in post.comments.all %}
+                                                <li >
+                                                    <div class="comet-avatar">
+                                                        {% if comment.user.user_image %}
+                                                            <img src="{{ comment.user.user_image.url }}" alt="">
+                                                        {% else %}
+                                                            <img src="{% static 'images/default.jpg' %}" alt="">
+                                                        {% endif %}
                                                     </div>
-                                                    <p>{{ comment.content }}</p>
+                                                    <div class="we-comment">
+                                                        <div class="coment-head">
+                                                            <h5><a href="#" title="">{{ comment.user.username }}</a></h5>
+                                                            <span>{{ comment.created_at|timesince }} ago</span>
+                                                            <a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
+                                                            {% if request.user.username == comment.user.username %}
+                                                            
+                                                                <a href="{% url 'post:comment-delete' comment.pk %}" class="we-reply" ><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                           
+                                                            {% endif %}
+                                                        </div>
+                                                        <p>{{ comment.content  }}</p>
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                    </ul>
+                                     
+                                    <ul class="we-comet">
+                                            <li class="post-comment">
+                                                <div class="comet-avatar">
+                                                    <img src=# alt="">
+                                                </div>
+                                                <div class="post-comt-box">
+                                                    <form method="post"  action="{% url 'post:comment-create' post.id %}">
+                                                        {% csrf_token %}
+                                                        <input placeholder="Post your comment" id="comment-form" name="content" required>
+                                                        
+                                                        <button type="submit" class = "btn btn-primary">Comment</button>
+                                                       
+                                                    </form>
                                                 </div>
                                             </li>
-                                        {% endfor %}
-                                        <li class="post-comment">
-                                            <div class="comet-avatar">
-                                                <img src=# alt="">
-                                            </div>
-                                            <div class="post-comt-box">
-                                                <form method="post"  action="{% url 'post:comment-create' post.id %}">
-                                                    {% csrf_token %}
-                                                    <input placeholder="Post your comment" id="comment-form" name="content" required>
-                                                    
-                                                    <button type="submit" class = "btn btn-primary">Comment</button>
-                                                   
-                                                </form>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                        </ul>
+                                   
                                 </div>
                             </div>
                         </div>
@@ -206,4 +216,53 @@
     </div>
     
 </div>
+{% endblock %}
+{% block scripts %}
+
+<script>
+    $( document ).ready(function() {
+       
+        $('.like-form').submit(function(e){
+            e.preventDefault()
+            
+            const post_id = $(this).attr('id');
+            const url = $(this).attr('action');
+            console.log("helo");
+            console.log(url);
+            const icon = this.querySelector('i');
+            console.log(icon)
+            const like_count = this.querySelector('ins');
+            // console.log(like_count.innerHTML );
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                    'post_id':post_id,
+                },
+                success : function(response){
+                    if(icon.classList.contains('fa-thumbs-up')) {
+                        $('#like{{post.id}}').html($('<i/>',{class:'fa fa-thumbs-down dislike'})) 
+                        // like_count.innerHTML = parseInt(like_count.innerHTML)+1;
+                        // console.log(like_count );
+
+                       
+                    } else {
+                        
+                          $('#like{{post.id}}').html($('<i/>',{class:'fa fa-thumbs-up like'}))
+                        //   like_count.innerHTML = parseInt(like_count.innerHTML)-1;
+                        //   console.log(like_count);
+                         
+                    }
+                       
+                    },
+                    error : function(rs, e){
+                        console.log(rs.responseText);
+                    },
+            })
+
+        })
+    });
+</script>
 {% endblock %}
