@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
 import random
 import datetime
@@ -27,5 +27,16 @@ class UserSignUpForm(UserCreationForm):
         user.date_of_birth = self.cleaned_data['date_of_birth']
         user.save()
         print(user)
-        
         return user
+
+
+class EditProfileForm(forms.Form):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'autofocus':'autofocus'}))
+    last_name = forms.CharField(widget=forms.TextInput())
+    email = forms.EmailField(widget=forms.TextInput())
+    gender = forms.CharField(widget=forms.Select(choices=(('MALE', 'MALE'), ('FEMALE', 'FEMALE')), attrs={'class':'formselect'}))
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    
+    class Meta(UserChangeForm.Meta):
+        model = User
+        fields="_all_"

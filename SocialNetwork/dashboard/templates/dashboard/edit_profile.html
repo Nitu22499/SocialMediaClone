@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style = "background-color: darkblue;">
+      <div class="container-fluid">
+        <a class="navbar-brand"  href="{% url 'post:home' %}"><img src="{% static 'images/logo.png' %}" alt="" style="height: 50px; width: 150px"></a>
+       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarColor02">
+            
+          </div>
+        </div>
+      </nav>
+    <!-- </Navbar> -->
+{% endblock %}
+{% block body %}
+
+<div class = "container" style = "padding-top: 2%; padding-bottom: 4%;">
+<div class = "card border shadow-2-strong col-md-8 mx-auto">
+    <h2 class = "card-header text-center bg-white ">Edit Profile</h2>
+<div class = "card-body">
+<form method = "POST" action = "">
+    {% csrf_token %}
+    {% for field in form %}
+    
+    <div class="form-group row mb-3">
+        <div class="col-auto align-self-center"></div>
+        {% if field.label != '' %}
+          <label class="col-sm-3 col-form-label">{{ field.label }}</label>
+          {% endif %}
+          <div class="col-sm-8 align-self-center">{{ field }}</div>
+          <span class="text-danger small">{{ field.errors }}</span>
+      </div>
+    {% endfor %}
+    
+    <div class = "text-center">
+    <button class="btn btn-primary" type="submit">Edit</button>
+    <!--<a class ="btn btn-primary col-md-4" href="{% url 'dashboard:login' %}">Login</a>-->
+    </div>
+</form>
+</div>
+</div>
+</div>
+
+
+{% endblock %}

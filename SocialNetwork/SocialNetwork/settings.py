@@ -44,6 +44,11 @@ INSTALLED_APPS = [
     'friend',
     'rest_framework',
     'communications',
+    'numpy',
+    'pandas',
+    'sklearn',
+    
+
 ]
 
 MIDDLEWARE = [
@@ -152,3 +157,5 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR , 'media')
 MEDIA_URL = '/media/'
+
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))

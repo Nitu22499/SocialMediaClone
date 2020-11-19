@@ -12,6 +12,9 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-post_date',]
+        
+    def get_absolute_url(self):
+        return reverse('post:home')
 
     @property
     def num_of_likes(self):
