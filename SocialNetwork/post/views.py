@@ -122,26 +122,26 @@ def create_comment(request, post_id=None):
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    template_name = 'dashboard/home.html'
+    # template_name = 'dashboard/home.html'
     success_url = reverse_lazy('post:home')
 
-    def get_object(self, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        print(pk)
-        obj = Post.objects.get(pk=pk)
-        print(obj)
-        if not obj.user == self.request.user:
-            messages.warning(self.request, 'You need to be the author of the post in order to delete it')
-        return obj.delete()
+    # def get_object(self, *args, **kwargs):
+    #     pk = self.kwargs.get('pk')
+    #     print(pk)
+    #     obj = Post.objects.get(pk=pk)
+    #     print(obj)
+    #     if not obj.user == self.request.user:
+    #         messages.warning(self.request, 'You need to be the author of the post in order to delete it')
+    #     return obj.delete()
 
 
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
-    template_name = 'dashboard/home.html'
+    # template_name = 'dashboard/home.html'
     success_url = reverse_lazy('post:home')
 
-    def get_object(self, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        print(pk)
-        Comment.objects.filter(id=pk).delete()
+    # def get_object(self, *args, **kwargs):
+    #     pk = self.kwargs.get('pk')
+    #     print(pk)
+    #     Comment.objects.filter(id=pk).delete()
         

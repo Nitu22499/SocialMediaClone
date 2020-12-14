@@ -1,0 +1,9 @@
+{% load static %}
+<form method="post" action="{% url 'dashboard:uploadprofile' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="attachments">
+    {{ form.as_p}}
+    <button type="submit" class = "btn btn-primary">Post</button>
+        
+    </div>
+</form>

@@ -18,7 +18,7 @@
                                             {% if friend.user.user_image %}
                                             <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
                                             {% else %}
-                                            <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                            <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                             {% endif %}
                                         </figure>
                                         <div class="people-name">
@@ -56,7 +56,7 @@
                                                         {% if friend.receiver.username != request.sender.username and friend.sender.user_image %}
                                                         <a href="{% url 'communications:messages-with-one-friend' friend.sender.username %}" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
                                                         {% else %}
-                                                        <a href="{% url 'communications:messages-with-one-friend' friend.sender.username %}" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                                        <a href="{% url 'communications:messages-with-one-friend' friend.sender.username %}" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                                         {% endif %}
                                                     </figure>
                                                     <div class="friendz-meta">

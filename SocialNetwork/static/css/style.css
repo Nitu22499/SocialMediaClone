@@ -69,6 +69,15 @@ body {
     color: #545454;
 }
 
+.profilecontainer{
+    margin-top:50px;
+    margin-left:200px;
+}
+
+.profilecontent{
+    margin-left:100px;
+}
+
 p {
     font-size: 14px;
     line-height: 26px;
@@ -909,8 +918,14 @@ header.sticky {
     visibility: visible;
     width: 100%;
 }
+figure[class ="user_profile"]>img{
+    
+    border-radius: 50%;
+}
 figure[class ="user_profile_image"]>img{
-    border-radius: 100%;
+    height: 180px;
+  width: 250px;
+    border-radius: 50%;
 }
 
 .edit-phto {
@@ -1161,11 +1176,12 @@ figure[class ="user_profile_image"]>img{
 /*--- sidebar widgets ---*/
 
 .sidebar {
+    margin-top:40px;
     display: table;
     float: none;
-    margin: 0 auto;
     padding-bottom: 20px;
-    width: 80%;
+    position:fixed;
+    width: 20%;
 }
 
 .sidebar .widget {
@@ -9697,6 +9713,11 @@ aside.sidebar.full-style {
 }
 aside.sidebar.static{
     margin-top:40px;
+    width:100%
+}
+.right.static{
+    margin-top:40px;
+    width:100%
 }
 .full-style .forum-static > li {
     border: 1px solid #eaeaea;
@@ -10191,6 +10212,19 @@ div [class="card-body-info"]{
 	height:60px;
 	bottom:40px;
 	right:40px;
+	background-color:darkblue;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px ;
+}
+
+.myfloat{
+	position:absolute;
+	width:60px;
+	height:60px;
+	top:250px;
+	left:290px;
 	background-color:darkblue;
 	color:#FFF;
 	border-radius:50px;

@@ -30,7 +30,7 @@
   <body style="background-color: #f0f2f5;">
       {% block navbar %}
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style = "background-color: darkblue;">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style = "background-color: darkblue;">
         <div class="container-fluid">
           <!-- <a class="navbar-brand"  href="{% url 'post:home' %}"><img src="{% static 'images/logo.png' %}" alt="" style="height: 50px; width: 150px"></a> -->
           <a class="navbar-brand" href="{% url 'post:home' %}" style="font-family: Pacifico;height: 50px; width: 150px">SocialMate</a>
@@ -40,9 +40,9 @@
           <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto mb-2 mb-lg-0 ">
               <div class="top-search">
-                <form method="get" class="form-inline" action="{% url 'dashboard:search' %}">
+                <form method="get" class="form-inline" action="/">
                   <input class="form-control mr-sm-2" type="text" placeholder="Search" name="searchfriend" value="searchfriend">
-                  {{searchfriend}}
+                  
                     <button data-ripple><i class="fa fa-search"></i></button>
                 </form>
             </div>             
@@ -63,7 +63,7 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-current="page" href="#">{{request.user.username}}</a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'dashboard:profile' request.user %}">View Profile</a>
+                    <a class="dropdown-item" href="{% url 'dashboard:profile' %}">View Profile</a>
                     <a class="dropdown-item" href="{% url 'dashboard:logout' %}">Logout</a>
                   </div>
                 </li>

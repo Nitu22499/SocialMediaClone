@@ -10,11 +10,11 @@
                 <div class = "card-body">
                     <div class ="row">
                         <div class="col-md-2">
-                            <figure class ="user_profile_image">
+                            <figure class ="user_profile">
                                 {% if request.user.user_image %}
                                 <img src="{{ user.user_image.url }}" alt="">
                                 {% else %}
-                                <img src="{% static 'images/default.jpg' %}" alt="">
+                                <img src="{% static 'images/user.jpg' %}" alt="">
                                 {% endif %}
                             </figure>
                         </div>
@@ -54,7 +54,7 @@
                                         {% if post.user.user_image %}
                                             <img src="{{ post.user.user_image.url }}" alt="">
                                         {% else %}
-                                            <img src="{% static 'images/default.jpg' %}"  alt="">
+                                            <img src="{% static 'images/user.jpg' %}"  alt="">
                                         {% endif %}
                                     </figure>
                                     <div class="friend-name">
@@ -81,11 +81,18 @@
                                                           <div class="modal-body">
                                                            Are you sure you want to delete the post?
                                                           </div>
-                                                          <div class="modal-footer">
+                                                          <!-- <div class="modal-footer">
                                                             <a href="{% url 'post:post-delete' post.pk %}" class="btn btn-danger" >yes</a>
                                                             <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                                                          </div>
-                                                      
+                                                          </div> -->
+                                                          <form class="modal-footer" method="post"
+                                                          action="{% url 'post:post-delete' post.pk %}">
+                                                        {% csrf_token %}
+                                                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                                                            <i class="fas fa-chevron-left"></i>&nbsp;return back
+                                                        </button>
+                                                        <button type="submit" class="btn btn-outline-danger">delete</button>
+                                                    </form>
                                                 </div><!-- Modal content-->
                                                 </div>
                                               </div>
@@ -114,9 +121,11 @@
                                                         {% csrf_token %}  
                                                         <input type="hidden" name="post_id" value="{{post.id}}">    
                                                         {% if user not in post.liked.all %}                                               
-                                                        <button id="like{{post.id}}" type="submit"><span class="like" data-toggle="tooltip" title="like"><i class="fas fa-thumbs-up like"></i><ins class="like-icon">{{ post.liked.count }}</ins></span></button>                                                           
+                                                        <button id="like{{post.id}}" type="submit"><span class="like" data-toggle="tooltip" title="like"><i id="liker" class="fas fa-thumbs-up like"></i><ins class="like-icon">{{ post.liked.count }}</ins></span></button>                                                           
+                                                        
                                                         {% else %}
-                                                        <button id="like{{post.id}}" type="submit"><span class="dislike" data-toggle="tooltip" title="dislike"><i class="fas fa-thumbs-down dislike"></i><ins class="dislike-icon">{{ post.liked.count }}</ins></span></button> 
+                                                        <button id="like{{post.id}}" type="submit"><span class="dislike" data-toggle="tooltip" title="dislike"><i id="disliker" class="fas fa-thumbs-down dislike"></i><ins class="dislike-icon">{{ post.liked.count }}</ins></span></button> 
+                                                      
                                                         {% endif %}
                                                     </form> 
                                                 </li>
@@ -166,7 +175,7 @@
                                                         {% if comment.user.user_image %}
                                                             <img src="{{ comment.user.user_image.url }}" alt="">
                                                         {% else %}
-                                                            <img src="{% static 'images/default.jpg' %}" alt="">
+                                                            <img src="{% static 'images/user.jpg' %}" alt="">
                                                         {% endif %}
                                                     </div>
                                                     <div class="we-comment">
@@ -176,8 +185,14 @@
                                                             <a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>
                                                             {% if request.user.username == comment.user.username %}
                                                             
-                                                                <a href="{% url 'post:comment-delete' comment.pk %}" class="we-reply" ><i class="fa fa-trash" aria-hidden="true"></i></a>
-                                                           
+                                         
+                                                            <form class="modal-footer" method="post"
+                                                                action="{% url 'post:comment-delete' comment.pk %}">
+                                                              {% csrf_token %}
+                                                              
+                                                              <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                          </form>
+                                              
                                                             {% endif %}
                                                         </div>
                                                         <p>{{ comment.content  }}</p>
@@ -211,12 +226,13 @@
            
         </div>
         <div class="col-md-3">
-            <h1>home</h1>
+            <!-- <h1>Suggestions for you</h1> -->
         </div>
     </div>
     
 </div>
 {% endblock %}
+{% comment %}
 {% block scripts %}
 
 <script>
@@ -242,20 +258,24 @@
                     'post_id':post_id,
                 },
                 success : function(response){
-                    if(icon.classList.contains('fa-thumbs-up')) {
-                        $('#like{{post.id}}').html($('<i/>',{class:'fa fa-thumbs-down dislike'})) 
+
+                    if(icon.classList.contains('fas fa-thumbs-up like')) {
+                        
+                        $('#like{{post.id}}').html($('<i/>',{class:'fas fa-thumbs-down dislike'})) ;
                         // like_count.innerHTML = parseInt(like_count.innerHTML)+1;
-                        // console.log(like_count );
+                        // console.log(like_count.innerHTML );
+                        // console.log("IF");
 
                        
                     } else {
-                        
-                          $('#like{{post.id}}').html($('<i/>',{class:'fa fa-thumbs-up like'}))
+                           $('#like{{post.id}}').html($('<i/>',{class:'fas fa-thumbs-up like'}));
                         //   like_count.innerHTML = parseInt(like_count.innerHTML)-1;
-                        //   console.log(like_count);
+                        // //   console.log(like_count.innerHTML);
+                        // console.log("Else");
                          
                     }
-                       
+                    console.log("hi");
+                         
                     },
                     error : function(rs, e){
                         console.log(rs.responseText);
@@ -266,3 +286,4 @@
     });
 </script>
 {% endblock %}
+{% endcomment %}

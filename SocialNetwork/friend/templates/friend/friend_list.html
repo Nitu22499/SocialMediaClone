@@ -9,7 +9,7 @@
                 {% if friend.user.username != request.user.username and friend.user.user_image %}
                 <a href="#" title=""><img src="{{ friend.user.user_image.url }}" alt=""></a>
                 {% else %}
-                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                 {% endif %}
             </figure>
             <div class="friendz-meta">
