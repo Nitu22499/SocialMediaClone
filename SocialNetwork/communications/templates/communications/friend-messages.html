@@ -19,7 +19,7 @@
                                     {% if friend.sender.username != request.user.username and friend.sender.user_image %}
                                     <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
                                     {% else %}
-                                    <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                    <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                     {% endif %}
                                 </figure>
                                 <div class="people-name">
@@ -49,7 +49,7 @@
                                     <div class="msg-box msg-box--background" >
                                         <div id="new-message-chat"></div>
                                     </div>
-                                    <textarea id="chat-message-input"></textarea>
+                                    <textarea id="chat-message-input" placeholder="Type your message"></textarea>
                                     <em id="typing"></em>
                                     <button title="send" id="chat-message-submit"><i class="fa fa-paper-plane btn btn-primary" aria-hidden="true"></i></button>
                                 </form>

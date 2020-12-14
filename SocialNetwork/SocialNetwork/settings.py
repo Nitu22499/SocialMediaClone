@@ -81,6 +81,8 @@ TEMPLATES = [
     },
 ]
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 WSGI_APPLICATION = 'SocialNetwork.wsgi.application'
 
 # Channels

@@ -6,7 +6,7 @@ class User(AbstractUser):
     middle_name = models.CharField(max_length=200, blank=True)
     date_of_birth = models.DateField(null = True)
     gender = models.CharField(max_length=10, default='Male', choices=(('MALE', 'MALE'), ('FEMALE', 'FEMALE')))
-    user_image = models.ImageField(upload_to ='documents/', null= True)
+    user_image = models.ImageField(upload_to ='documents/',default="images/user.jpg" ,null= True)
     
 
     def __str__(self):

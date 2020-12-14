@@ -6,8 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, RedirectView,TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
 from .models import *
-from .forms import UserSignUpForm
-from .forms import EditProfileForm
+from .forms import UserSignUpForm, EditProfileForm, UploadProfilePicForm
 from post.models import *
 from django.forms.models import model_to_dict
 from post.views import *
@@ -99,3 +98,40 @@ def searchUser(request):
         print(user)
         return render(request,'dashboard/profile-view.html',{'user':user})
 
+class UploadProfilePic(FormView):
+    model = User
+    form_class = UploadProfilePicForm
+    template_name = 'dashboard/upload-profile.html'
+    success_url = reverse_lazy('dashboard:profile')
+
+    def get_object(self):
+        """Check if data already exists"""
+        try:
+            self.object = User.objects.get(username= self.request.user)
+            print(self.object)
+            return self.object
+        except:
+            return None
+
+    def get_initial(self):
+        """Pre-fill the form if data exists"""
+        obj = self.get_object()
+        print(obj)
+        if obj is not None:
+            initial_data = model_to_dict(obj)
+            print(initial_data)
+            initial_data.update(model_to_dict(obj))
+            print(initial_data)
+            return initial_data
+        else:
+            return super().get_initial()
+
+    def form_valid(self, form):
+        """Save to the database. If data exists, update else create new record"""
+        User.objects.filter(username=self.object).update(
+            user_image =form.cleaned_data['user_image'],
+        )
+        messages.success(self.request, 'Image uploaded successfully')
+        return super().form_valid(form)
+
+    

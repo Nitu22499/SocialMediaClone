@@ -23,7 +23,7 @@
                                                         {% if user.user_image %}
                                                         <a href="#" title=""><img src="{{ user.user_image.url }}" alt=""></a>
                                                         {% else %}
-                                                        <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                                        <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                                         {% endif %}
                                                     </figure>
                                                     <div class="pepl-info">
@@ -58,7 +58,7 @@
                                 {% if user.user_image %}
                                 <a href="#" title=""><img src="{{ user.user_image.url }}" alt=""></a>
                                 {% else %}
-                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                 {% endif %}
                             </figure>
                             <div class="friend-meta">
@@ -81,7 +81,7 @@
                                 {% if user != request.user and user.user_image %}
                                 <a href="#" title=""><img src="{{ user.user.user_image.url }}" alt=""></a>
                                 {% else %}
-                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                 {% endif %}
                             </figure>
                             <div class="friend-meta">
@@ -104,7 +104,7 @@
                                 {% if friend.user.username != request.user.username and friend.user.user_image %}
                                 <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
                                 {% else %}
-                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                 {% endif %}
                             </figure>
                             <div class="friendz-meta">

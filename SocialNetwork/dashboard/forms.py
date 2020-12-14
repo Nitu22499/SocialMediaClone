@@ -29,6 +29,13 @@ class UserSignUpForm(UserCreationForm):
         print(user)
         return user
 
+class UploadProfilePicForm(forms.ModelForm):
+    # user_image = forms.ImageField()
+    class Meta:
+        model = User
+        fields = ('user_image',)
+
+    
 
 class EditProfileForm(forms.Form):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'autofocus':'autofocus'}))

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from dashboard.models import User
+from django.urls import reverse_lazy, reverse
 
 # Create your models here.
 class Post(models.Model):
@@ -12,9 +13,9 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-post_date',]
-        
+
     def get_absolute_url(self):
-        return reverse('post:home')
+        return reverse_lazy('post:home')
 
     @property
     def num_of_likes(self):
