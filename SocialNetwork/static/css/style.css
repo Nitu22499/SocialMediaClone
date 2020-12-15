@@ -124,7 +124,7 @@ button:focus {
 }
 
 img {
-    height: auto;
+    height: -webkit-fill-available;
     max-width: 100%;
 }
 
@@ -10235,3 +10235,12 @@ div [class="card-body-info"]{
 .my-float{
 	margin-top:22px;
 }
+
+/* .img-item {
+    width: 120px;
+    height: 120px;
+    height: auto;
+    float: left;
+    margin: 3px;
+    padding: 3px;
+} */

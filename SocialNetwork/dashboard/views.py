@@ -10,6 +10,7 @@ from .forms import UserSignUpForm, EditProfileForm, UploadProfilePicForm
 from post.models import *
 from django.forms.models import model_to_dict
 from post.views import *
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
@@ -131,6 +132,9 @@ class UploadProfilePic(FormView):
         User.objects.filter(username=self.object).update(
             user_image =form.cleaned_data['user_image'],
         )
+        myfile = self.request.FILES['user_image']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
         messages.success(self.request, 'Image uploaded successfully')
         return super().form_valid(form)
 
