@@ -41,18 +41,25 @@
                                     <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
                                     {% endif %}
                                 </figure>
-                                <span>Chat with {{ friend_name_json|slice:"1:-1" }}</span>
+                                <span class="friendName" id="{{ friend_name_json|slice:'1:-1' }}">Chat with {{ friend_name_json|slice:"1:-1" }}</span>
+                            </div>                          
+                            <div>
+                                <ul id="messages" class="messages">
+                                            {# Messages go here #}
+                                </ul>
                             </div>
-                            <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-                            <div class="message-text-container">
-                                <form onsubmit=" return false;">
-                                    <div class="msg-box msg-box--background" >
-                                        <div id="new-message-chat"></div>
-                                    </div>
-                                    <textarea id="chat-message-input" placeholder="Type your message"></textarea>
-                                    <em id="typing"></em>
-                                    <button title="send" id="chat-message-submit"><i class="fa fa-paper-plane btn btn-primary" aria-hidden="true"></i></button>
-                                </form>
+                            <div class="panel-footer">
+                                <div class="input-group">
+                                    <form onsubmit="" method = "POST">
+                                        {% csrf_token %}
+                                         <input id="chat-input" type="text" class="form-control input"
+                                                placeholder="Type your message here ..."
+                                                maxlength="500">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-info btn" id="btn-send">Send</button>
+                                        </span>
+                                    </form>                                          
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -65,42 +72,98 @@
 
 {% endblock %}
 {% block scripts %}
+<script>
+    let sessionKey = '{{ request.session.session_key }}';
+    let currentUser = '{{ request.user.username }}';
+</script>
 
 <script>
+    let currentRecipient = 'SALONI_123';
+    let chatInput = $('#chat-input');
+    let chatButton = $('#btn-send');
+    let messageList = $('#messages');
 
-        let friendName = {{ friend_name_json }};
-        let username = {{ username }};
+   
 
-        let chatSocket = new WebSocket(
-            'ws://' + window.location.host +
-            '/ws/chat/' + friendName + '/');
+    function drawMessage(message) {
+        let position = 'left';
+        const date = new Date(message.timestamp);
+        if (message.user === currentUser) position = 'right';
+        const messageItem = `
+                <li class="message ${position}">
+                    <div class="avatar">${message.user}</div>
+                        <div class="text_wrapper">
+                            <div class="text">${message.body}<br>
+                                <span class="small">${date}</span>
+                        </div>
+                    </div>
+                </li>`;
+        $(messageItem).appendTo('#messages');
+    }
 
-
-
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-        };
-
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
+    function getConversation(friend) {
+        $.getJSON(`/communications/api/v1/message/?target=${friend}`, function (data) {
+            messageList.children('.message').remove();
+            for (let i = data['results'].length - 1; i >= 0; i--) {
+                drawMessage(data['results'][i]);
             }
-        };
+            messageList.animate({scrollTop: messageList.prop('scrollHeight')});
+        });
 
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
-    </script>
+    }
+
+    function getMessageById(message) {
+        id = JSON.parse(message).message
+        $.getJSON(`/communications/api/v1/message/${id}/`, function (data) {
+            console.log(data);
+            if (data.user === "admin" ||
+                (data.friend === "SALONI_123" && data.author == "admin")) {
+                drawMessage(data);
+            }
+            messageList.animate({scrollTop: messageList.prop('scrollHeight')});
+        });
+    }
+
+    function sendMessage(recipient, body) {
+        console.log(recipient,body)
+        $.post('/communications/api/v1/message/', {
+            friend: 15,
+            message: "hii"
+        }).fail(function () {
+            alert('Error! Check console!');
+        });
+    }
+
+    
+
+$(document).ready(function () {
+        let friendName = currentRecipient;
+        var socket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws?session_key=${sessionKey}')
+        // let socket = new WebSocket(
+        //     'ws://' + window.location.host +
+        //     '/ws/communications/' + currentRecipient + '/');
+    console.log(socket);
+    chatInput.keypress(function (e) {
+        if (e.keyCode == 13)
+            chatButton.click();
+    });
+    
+    chatButton.click(function () {
+        if (chatInput.val().length > 0) {
+            sendMessage(currentRecipient, chatInput.val());
+            chatInput.val('');
+        }
+    });
+
+    socket.onmessage = function (e) {
+        console.log("mess");
+        getMessageById(e.data);
+    };
+});
+
+</script>
+
 
 {% endblock %}

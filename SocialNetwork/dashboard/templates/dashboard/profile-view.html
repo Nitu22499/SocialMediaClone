@@ -105,8 +105,8 @@
 <div class="container">
     <div class="row">
         {% for post in posts %}
-        <div class="img-item col-md-4" style="padding:20px">
-            <img src="{{ post.post_image.url }}"width="600" height="600">
+        <div class="col-md-4" style="padding:20px">
+            <img src="{{ post.post_image.url }}" class="img-item " width="600" height="600">
         </div>
         {% endfor %}
     </div>
