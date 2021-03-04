@@ -1,5 +1,5 @@
 import uuid
-
+from dashboard.models import User
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -15,7 +15,7 @@ class Room(models.Model):
 class Message(models.Model):
     author = models.ForeignKey(User, related_name='author_messages', on_delete=models.CASCADE)
     friend = models.ForeignKey(User, related_name='friend_messages', on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, related_name='messages', on_delete=models.DO_NOTHING)
+    # room = models.ForeignKey(Room, related_name='messages', on_delete=models.DO_NOTHING)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
