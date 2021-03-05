@@ -8,6 +8,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from .models import *
 from .forms import UserSignUpForm, EditProfileForm, UploadProfilePicForm
 from post.models import *
+from friend.models import FriendRequest
 from django.forms.models import model_to_dict
 from post.views import *
 from django.core.files.storage import FileSystemStorage
@@ -46,6 +47,9 @@ class ProfileView(CreateView):
         user=self.request.user
         posts=Post.objects.filter(user=user)
         kwargs['posts']=posts
+        friend_list_r = FriendRequest.objects.filter(receiver=self.request.user,status='friend')
+        friend_list_s = FriendRequest.objects.filter(sender=self.request.user,status='friend')
+        kwargs['friends']=friend_list_r|friend_list_s
         return kwargs
 
 class Edit_Profile(FormView):

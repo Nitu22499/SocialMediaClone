@@ -28,7 +28,7 @@
                                             <li>
                                                 <i class="fa fa-image"></i>
                                                 <label class="fileContainer">
-                                                    <input type="file" name="post_image" required>
+                                                    <input type="file" name="post_image" accept=".mp4" required>
                                                 </label>
                                             </li>
                                             <li>
@@ -63,13 +63,13 @@
                                             <div class="col-10">published: {{ post.post_date|timesince }} ago</div>
                                             {% if request.user.username == post.user.username %}
                                             <div class="col-2">
-                                            <a href="#" data-toggle="modal" data-target="#myDeleteModal">
+                                            <a href="#" data-toggle="modal" data-target="#myDeleteModal{{post.pk}}" id="mod_del">
                                                 <button class="btn btn-danger">
                                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                                 </button></a>
                                             </div>
                                         
-                                            <div class="modal fade" id="myDeleteModal" role="dialog">
+                                            <div class="modal fade" id="myDeleteModal{{post.pk}}" role="dialog">
                                                 <div class="modal-dialog">
                                                 
                                                   <!-- Modal content-->
@@ -104,8 +104,17 @@
                                         <img src="#" alt="">
                                         
                                         <div class="description">
+                        
                                             <img src="{{ post.post_image.url }}"class="img-item " width="600" height="250">
                                             <p>{{ post.post_body }}</p>
+                                           
+                                            {% if .mp4 in post.post_image.url %}  
+                                            <video width="500" height="500" controls >
+                                                <source src="{{post.post_image.url}}" type="video/mp4">
+                                                <b>{{post.post_body}}</b>
+                                            </video>
+                                            {% endif %}
+
                                         </div>
                                         <div class="we-video-info">
                                             <ul>

@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'numpy',
     'pandas',
     'sklearn',
+    'tensorflow',
+    'keras',
     
 
 ]
