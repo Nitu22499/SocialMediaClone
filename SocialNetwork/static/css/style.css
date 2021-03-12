@@ -57,6 +57,22 @@ Last change:  4/september/18
 /*===============
 ***General Styling 
 ===============*/
+
+@keyframes blinker {
+    from {opacity: 1.0;}
+    to {opacity: 0.0;}
+  }
+  
+.blink {
+    text-decoration: blink;
+    animation-name: blinker;
+    animation-duration: 0.6s;
+    animation-iteration-count:infinite;
+    animation-timing-function:ease-in-out;
+    animation-direction: alternate;
+  }
+
+  
 html,body{
 	font-family: "Muli", "Segoe Ui";
 }
@@ -1029,11 +1045,24 @@ header.sticky {
 figure[class ="user_profile"]>img{
     
     border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+   
 }
+
+@media only screen and (max-width: 570px) {
+    figure[class ="user_profile"]>img{
+        width: 12%;
+        display: inline-block;
+    }
+}
+
 figure[class ="user_profile_image"]>img{
     height: 180px;
-  width: 250px;
+    width: 250px;
     border-radius: 50%;
+
 }
 
 .edit-phto {
@@ -1290,6 +1319,12 @@ figure[class ="user_profile_image"]>img{
     padding-bottom: 20px;
     position:fixed;
     width: 20%;
+}
+
+@media only screen and (max-width: 976px) {
+    #sidebar {
+        display: none;
+    }
 }
 
 .sidebar .widget {
@@ -2132,7 +2167,7 @@ li.post-comment .comet-avatar {
     bottom: 2px;
     position: absolute;
     right: 0;
-    background: none;
+    background-color: primary;
 }
 
 

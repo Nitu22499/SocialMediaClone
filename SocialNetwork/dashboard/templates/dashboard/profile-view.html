@@ -7,11 +7,12 @@
     <div class="row">
         <div class="col-md-2">
             <figure class ="user_profile_image">
-                {% if request.user.user_image %}
+                {% if user.user_image %}
                 <img src="{{ user.user_image.url }}" alt="">
                 {% else %}
                 <img src="{% static 'images/user.jpg' %}" alt="">
                 {% endif %}
+                {% if user.is_authenticated and user == request.user %}
                 <a href="#" class="myfloat" data-toggle="modal" data-target="#myModal">
                     <i class="fa fa-camera my-float"></i>
                 </a>
@@ -36,13 +37,14 @@
                       
                     </div>
                   </div>
+                  {% endif %}
             </figure>
         </div>
                
         <div class="col-md-6">
             <div class="profilecontent">
-                <h1 class="title is-1">@{{ request.user }}</h1>
-                <p class="subtitle is-3">{% if request.user.first_name %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}</p>
+                <h1 class="title is-1">@{{ user }}</h1>
+                <p class="subtitle is-3">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% endif %}</p>
                                 
                 <div class="row">
                 

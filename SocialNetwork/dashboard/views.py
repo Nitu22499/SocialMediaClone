@@ -44,13 +44,24 @@ class ProfileView(CreateView):
     template_name = 'dashboard/profile-view.html'
     model=Post
     def get_context_data(self, **kwargs):
+        # print(self.kwargs['pk'])
         user=self.request.user
+        kwargs['user']=user
         posts=Post.objects.filter(user=user)
         kwargs['posts']=posts
-        friend_list_r = FriendRequest.objects.filter(receiver=self.request.user,status='friend')
-        friend_list_s = FriendRequest.objects.filter(sender=self.request.user,status='friend')
+        friend_list_r = FriendRequest.objects.filter(receiver=user,status='friend')
+        friend_list_s = FriendRequest.objects.filter(sender=user,status='friend')
         kwargs['friends']=friend_list_r|friend_list_s
         return kwargs
+
+def profile_view(request, pk):
+    # print(request)
+    user=User.objects.get(id=pk)
+    posts=Post.objects.filter(user=user)
+    friend_list_r = FriendRequest.objects.filter(receiver=user,status='friend')
+    friend_list_s = FriendRequest.objects.filter(sender=user,status='friend')
+    return render(request, 'dashboard/profile-view.html', {'user':user,'posts': posts,'friends':friend_list_r|friend_list_s})
+    
 
 class Edit_Profile(FormView):
     model = User
@@ -93,15 +104,47 @@ class Edit_Profile(FormView):
         messages.success(self.request, 'Edited successfully')
         return super().form_valid(form)
 
+def ajax_search(request):
+    ctx = {}
+    searchfriend = request.GET.get("searchfriend")
+    print(searchfriend)
 
+    if searchfriend:
+        users = User.objects.filter(username__icontains=searchfriend)
+        print(users)
+    else:
+        users = User.objects.all()
+
+    ctx["users"] = users
+    posts=Post.objects.all().order_by('-post_date')
+    ctx["posts"] = posts
+
+               
+    if request.is_ajax():
+        html = render_to_string(
+            template_name="dashboard/search-user.html", 
+            context={"users": users}
+        )
+
+        data_dict = {"html_from_view": html}
+
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, "dashboard/home.html", context=ctx)
     
 def searchUser(request):
     
-    if request.method == 'GET': # this will be GET now      
-        searchfriend =  request.GET.get('searchfriend') # do some research what it does       
-        user = User.objects.filter(username=searchfriend)
-        print(user)
-        return render(request,'dashboard/profile-view.html',{'user':user})
+    if request.method == 'GET': # this will be GET now  
+        searchfriend =request.GET.get('searchfriend') 
+        print(searchfriend)  
+        try:     
+            user = User.objects.get(username=searchfriend)
+            posts=Post.objects.filter(user=user)
+            friend_list_r = FriendRequest.objects.filter(receiver=user,status='friend')
+            friend_list_s = FriendRequest.objects.filter(sender=user,status='friend')
+            return render(request, 'dashboard/profile-view.html', {'user':user,'posts': posts,'friends':friend_list_r|friend_list_s})
+        except:
+            return redirect(reverse_lazy('post:home'))
 
 class UploadProfilePic(FormView):
     model = User

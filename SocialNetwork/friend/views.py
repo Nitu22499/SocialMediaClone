@@ -79,3 +79,5 @@ def accept_request(request, friend=None):
         return redirect('friend:find-friends')
 
 
+def cancel_request(request, username=None):
+    pass

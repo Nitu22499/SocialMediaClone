@@ -114,6 +114,7 @@
 
     function getMessageById(message) {
         id = JSON.parse(message).message
+        console.log(id);
         $.getJSON(`/communications/api/v1/message/${id}/`, function (data) {
             console.log(data);
             if (data.user === "admin" ||
@@ -138,12 +139,9 @@
 
 $(document).ready(function () {
         let friendName = currentRecipient;
-        var socket = new WebSocket(
-        'ws://' + window.location.host +
-        '/ws?session_key=${sessionKey}')
-        // let socket = new WebSocket(
-        //     'ws://' + window.location.host +
-        //     '/ws/communications/' + currentRecipient + '/');
+        let socket = new WebSocket(
+            'ws://' + window.location.host +
+            '/ws/communications/' + currentRecipient + '/');
     console.log(socket);
     chatInput.keypress(function (e) {
         if (e.keyCode == 13)

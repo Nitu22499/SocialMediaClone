@@ -28,9 +28,16 @@
                                                     </figure>
                                                     <div class="pepl-info">
                                                         <h4><a href="#" title="">{{ user.username }}</a></h4>
-                                                            <!-- <span>Software Engineer</span> -->
+                        
                                                             <a href="{% url 'friend:send-request' user.username %}" title="" data-url="{% url 'friend:send-request' user.username %}" class="btn btn-primary add-butn add-friend" data-ripple="" data-friend="{{ user.username }}">Add Friend</a>
+                                                              
                                                     </div>
+                                                    <div class="pepl-view-profile">
+                                                                                                                
+                                                            <a href="{% url 'dashboard:profile_view' user.id %}">View Profile</a> 
+                                                              
+                                                    </div>
+                                                    
                                                 </div>
                                             </li>
                                             {% endfor %}
@@ -56,7 +63,7 @@
                         <li>
                             <figure>
                                 {% if user.user_image %}
-                                <a href="#" title=""><img src="{{ user.user_image.url }}" alt=""></a>
+                                <a href="#" title=""><img src="{{ user.user.user_image.url }}" alt=""></a>
                                 {% else %}
                                 <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                 {% endif %}
@@ -65,7 +72,7 @@
                                 <h4><a href="" title="">{{ user.sender.username }}</a></h4>
                                 <!-- <a href="#" title="" class="underline">Accept</a> -->
                                 <a href="{% url 'friend:accept-request' user.sender.username %}" title="" data-url="{% url 'friend:accept-request' user.sender.username %}" class="btn btn-primary add-butn add-friend" data-ripple="" data-friend="{{ user.username }}">Accept</a>
-                                                   
+                                <a href="{% url 'dashboard:profile_view' user.sender.id %}">View Profile</a>           
                             </div>
                         </li>
                         {% endfor %}
@@ -87,6 +94,7 @@
                             <div class="friend-meta">
                                 <h4><a href="" title="">{{ user }}</a></h4>
                                 <a href="#" title="" class="underline">Add Friend</a>
+                                
                             </div>
                         </li>
                         {% endfor %}
@@ -101,7 +109,7 @@
                         <li>
 
                             <figure>
-                                {% if friend.user.username != request.user.username and friend.user.user_image %}
+                                {% if friend.user.username == request.user.username and friend.sender.user_image %}
                                 <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
                                 {% else %}
                                 <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
@@ -109,12 +117,13 @@
                             </figure>
                             <div class="friendz-meta">
                                 {% if friend.sender.username == request.user.username %}
-                                <a href="time-line.html">{{ friend.receiver.username }}</a>
+                                <h6><a href="">{{ friend.receiver.username }}</a></h6>
+                                <a href="{% url 'dashboard:profile_view' friend.receiver.id %}">View Profile</a>
                                 {% else %}
-                                <a href="time-line.html">{{ friend.sender.username }}</a>
+                                <h6><a href="">{{ friend.sender.username }}</a></h6>
+                                <a href="{% url 'dashboard:profile_view' friend.sender.id %}">View Profile</a>   
                                 {% endif %}
-                                <i><a href="https://wpkixx.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583a392a363d2b183f35393134763b3735">[email&#160;protected]</a></i>
-                            </div>
+                             </div>
                         </li>
                         {% endfor %}
                     </ul>

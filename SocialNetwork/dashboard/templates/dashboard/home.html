@@ -4,12 +4,13 @@
 
 <div class="container-fluid">
     <div class="row">
-        {% include 'includes/sidebar.html' %}
+            {% include 'includes/sidebar.html' %}
+        
         <div class="col-md-6" style="margin-top:40px">
             <div class = "card border">
                 <div class = "card-body">
                     <div class ="row">
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-sm-1">
                             <figure class ="user_profile">
                                 {% if request.user.user_image %}
                                 <img src="{{ user.user_image.url }}" alt="">
@@ -234,9 +235,10 @@
                 </div>
            
         </div>
-        <div class="col-md-3">
-            <!-- <h1>Suggestions for you</h1> -->
-        </div>
+    
+            <div id="replaceable-content" class="col-3">
+                {% include 'dashboard/search-user.html' %}
+            </div>      
     </div>
     
 </div>
@@ -271,16 +273,16 @@
                     if(icon.classList.contains('fas fa-thumbs-up like')) {
                         
                         $('#like{{post.id}}').html($('<i/>',{class:'fas fa-thumbs-down dislike'})) ;
-                        // like_count.innerHTML = parseInt(like_count.innerHTML)+1;
+                        like_count.innerHTML = parseInt(like_count.innerHTML)+1;
                         // console.log(like_count.innerHTML );
-                        // console.log("IF");
+                        console.log("IF");
 
                        
                     } else {
                            $('#like{{post.id}}').html($('<i/>',{class:'fas fa-thumbs-up like'}));
-                        //   like_count.innerHTML = parseInt(like_count.innerHTML)-1;
+                          like_count.innerHTML = parseInt(like_count.innerHTML)-1;
                         // //   console.log(like_count.innerHTML);
-                        // console.log("Else");
+                        console.log("Else");
                          
                     }
                     console.log("hi");
