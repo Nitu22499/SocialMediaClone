@@ -1,0 +1,11 @@
+{% if users %}
+<option value="">---------</option>
+{% for user in users %}
+<option id="{{ user.pk }}" href="{% url 'dashboard:profile_view' user.id %}">
+    <a href="{% url 'dashboard:profile_view' user.id %}"></a>{{ user.username }}</a>
+</option>
+
+{% endfor %}
+{% else %}
+<option id="">No user found.</option>
+{% endif %}

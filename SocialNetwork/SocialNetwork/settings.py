@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'dashboard',
     'post',
     'chat',
-    'ChatMessage',
     'friend',
     'rest_framework',
     'communications',

@@ -3628,12 +3628,10 @@ a.add-butn {
     font-size: 13px;
     line-height: initial;
     padding: 5px 10px;
-    position: absolute;
     right: 0;
     text-transform: capitalize;
     top: 10px;
 }
-
 .pepl-info > span {
     float: left;
     font-size: 13px;

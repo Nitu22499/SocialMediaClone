@@ -12,7 +12,8 @@ from friend.models import FriendRequest
 from django.forms.models import model_to_dict
 from post.views import *
 from django.core.files.storage import FileSystemStorage
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 class Login(LoginView):
@@ -37,10 +38,10 @@ class RegisterView(CreateView):
 
 
  
-class Logout(LogoutView):
+class Logout(LoginRequiredMixin,LogoutView):
     pass
 
-class ProfileView(CreateView):
+class ProfileView(LoginRequiredMixin,CreateView):
     template_name = 'dashboard/profile-view.html'
     model=Post
     def get_context_data(self, **kwargs):
@@ -53,7 +54,7 @@ class ProfileView(CreateView):
         friend_list_s = FriendRequest.objects.filter(sender=user,status='friend')
         kwargs['friends']=friend_list_r|friend_list_s
         return kwargs
-
+@login_required
 def profile_view(request, pk):
     # print(request)
     user=User.objects.get(id=pk)
@@ -63,7 +64,7 @@ def profile_view(request, pk):
     return render(request, 'dashboard/profile-view.html', {'user':user,'posts': posts,'friends':friend_list_r|friend_list_s})
     
 
-class Edit_Profile(FormView):
+class Edit_Profile(LoginRequiredMixin,FormView):
     model = User
     form_class = EditProfileForm
     template_name = 'dashboard/edit_profile.html'
@@ -104,34 +105,25 @@ class Edit_Profile(FormView):
         messages.success(self.request, 'Edited successfully')
         return super().form_valid(form)
 
-def ajax_search(request):
-    ctx = {}
-    searchfriend = request.GET.get("searchfriend")
-    print(searchfriend)
-
-    if searchfriend:
-        users = User.objects.filter(username__icontains=searchfriend)
-        print(users)
-    else:
-        users = User.objects.all()
-
-    ctx["users"] = users
-    posts=Post.objects.all().order_by('-post_date')
-    ctx["posts"] = posts
-
-               
-    if request.is_ajax():
-        html = render_to_string(
-            template_name="dashboard/search-user.html", 
-            context={"users": users}
-        )
-
-        data_dict = {"html_from_view": html}
-
-        return JsonResponse(data=data_dict, safe=False)
-
-    return render(request, "dashboard/home.html", context=ctx)
     
+@login_required
+def ajax_search(request):   
+    if request.is_ajax():
+        try:
+            user = request.GET.get('user', None)
+            user = User.objects.filter(username__icontains=user).values()
+            html = render_to_string(
+                template_name="dashboard/search.html", 
+                context={"users": user}
+            )
+
+            data_dict = {"html_from_view": html}
+            print(data_dict)
+            return JsonResponse(data=data_dict, safe=False)
+        except:
+            return reverse_lazy('dashboard:search')
+
+@login_required
 def searchUser(request):
     
     if request.method == 'GET': # this will be GET now  
@@ -146,7 +138,7 @@ def searchUser(request):
         except:
             return redirect(reverse_lazy('post:home'))
 
-class UploadProfilePic(FormView):
+class UploadProfilePic(LoginRequiredMixin, FormView):
     model = User
     form_class = UploadProfilePicForm
     template_name = 'dashboard/upload-profile.html'

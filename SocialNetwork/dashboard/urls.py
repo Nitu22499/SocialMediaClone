@@ -14,6 +14,8 @@ urlpatterns = [
     path('upload-profile-pic/', UploadProfilePic.as_view(), name = 'uploadprofile'),
     path('search/', searchUser, name = 'search'),
     path('ajax-search/', ajax_search, name = 'ajax-search'),
+    # path('ajax-search/', autocompleteModel, name = 'ajax-search'),
+    
 
 
 ]

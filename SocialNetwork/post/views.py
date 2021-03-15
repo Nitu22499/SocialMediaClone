@@ -73,7 +73,7 @@ def predict(text):
 
 
 
-class HomeView(CreateView):
+class HomeView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'dashboard/home.html'
     form_class = PostForm
@@ -135,7 +135,7 @@ def like_unlike_post(request):
 
     return redirect('post:home')
 
-
+@login_required
 def create_comment(request, post_id=None):
     counter=0
     if request.method == "POST":
