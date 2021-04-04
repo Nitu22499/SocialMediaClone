@@ -10,6 +10,7 @@ from .serializers import NotificationSerializer
 from .models import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+
 class FindFriendsListView(LoginRequiredMixin, ListView):
     model = FriendRequest
     context_object_name = 'users'
@@ -26,22 +27,17 @@ class FindFriendsListView(LoginRequiredMixin, ListView):
         current_user_friends = (friend_list_r|friend_list_s).values('receiver')
     
         friend_list = friend_list_r|friend_list_s
-        # print(friend_list)
-        friend_list = friend_list.exclude(id=self.request.user.id)
+        
         kwargs['friend_list']=friend_list
-        # print(friend_list)
 
         sent_request = FriendRequest.objects.filter(sender=self.request.user,status='requested')
         kwargs['sent_request']=sent_request
-        # print("sent",kwargs['sent_request'])
 
         recieve_request = FriendRequest.objects.filter(receiver=self.request.user,status='requested')
         kwargs['recieve_request']=recieve_request
-        # print(kwargs['recieve_request'])
 
         users = User.objects.exclude(id=self.request.user.id).exclude(username__in=send_req).exclude(id__in=received_req).exclude(id__in=current_user_friends)
         kwargs['users']=users
-        # print(users)
         return kwargs
 @login_required
 def send_request(request, username=None):
@@ -80,7 +76,3 @@ def accept_request(request, friend=None):
             'message': "You accepted friend request",
         }
         return redirect('friend:find-friends')
-
-@login_required
-def cancel_request(request, username=None):
-    pass

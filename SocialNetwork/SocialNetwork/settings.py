@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
     'post',
-    'chat',
     'friend',
     'rest_framework',
     'communications',
