@@ -18,6 +18,8 @@
                                 <figure>
                                     {% if friend.sender.username != request.user.username and friend.sender.user_image %}
                                     <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
+                                    {% elif friend.receiver.username != request.user.username and friend.sender.user_image %}
+                                    <a href="#" title=""><img src="{{ friend.receiver.user_image.url }}" alt=""></a>
                                     {% else %}
                                     <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                     {% endif %}
@@ -35,8 +37,11 @@
                         <div class="peoples-mesg-box">
                             <div class="conversation-head">
                                 <figure>
-                                    {% if friend.sender.user_image %}
-                                    <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
+                                    <!-- <p>user{{ user_image_json }} frnd {{ friend_image_json }}</p> -->
+                                    {% if friend_image_json != "None" %}
+                                    <a href="#" title=""><img src="{{ friend_image_json|slice:'1:-1' }}" alt=""></a>
+                                    {% elif user_image_json != "None" %}
+                                    <a href="#" title=""><img src="{{ user_image_json |slice:'1:-1'}}" alt=""></a>
                                     {% else %}
                                     <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
                                     {% endif %}
@@ -45,13 +50,35 @@
                             </div>                          
                             <div>
                                 <ul id="messages" class="messages">
-                                            {# Messages go here #}
+                                    <!-- {# Messages go here #} -->
+                                    {% for chat in chat %}
+                                        {% if chat.author.username == request.user.username %}
+                                            <li class="message right">
+                                                <div class="avatar">{{ chat.friend}}</div>
+                                                    <div class="text_wrapper">
+                                                        <div class="text">{{chat.message}}<br>
+                                                        <span class="small">{{chat.timestamp}}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        {% else %}
+                                            <li class="message left">
+                                                <div class="avatar">{{ chat.author.username}}</div>
+                                                    <div class="text_wrapper">
+                                                        <div class="text">{{chat.message}}<br>
+                                                        <span class="small">{{chat.timestamp}}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
                                 </ul>
                             </div>
                             <div class="panel-footer">
                                 <div class="input-group">
                                     <form onsubmit="" method = "POST">
                                         {% csrf_token %}
+                                        <input type="hidden" id="userid" value={{request.user.username}}>
                                          <input id="chat-input" type="text" class="form-control input"
                                                 placeholder="Type your message here ..."
                                                 maxlength="500">
@@ -70,100 +97,12 @@
     </div>
 </div>
 
-{% endblock %}
-{% block scripts %}
-<script>
-    let sessionKey = '{{ request.session.session_key }}';
-    let currentUser = '{{ request.user.username }}';
-</script>
 
-<script>
-    let currentRecipient = 'SALONI_123';
-    let chatInput = $('#chat-input');
-    let chatButton = $('#btn-send');
-    let messageList = $('#messages');
+<script type="text/javascript" src="{% static 'js/vendor/jquery-3.5.1.min.js' %}"></script>
+  <script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+  <script type="text/javascript" src="{% static 'js/message.js' %}"></script>
 
-   
 
-    function drawMessage(message) {
-        let position = 'left';
-        const date = new Date(message.timestamp);
-        if (message.user === currentUser) position = 'right';
-        const messageItem = `
-                <li class="message ${position}">
-                    <div class="avatar">${message.user}</div>
-                        <div class="text_wrapper">
-                            <div class="text">${message.body}<br>
-                                <span class="small">${date}</span>
-                        </div>
-                    </div>
-                </li>`;
-        $(messageItem).appendTo('#messages');
-    }
-
-    function getConversation(friend) {
-        $.getJSON(`/communications/api/v1/message/?target=${friend}`, function (data) {
-            messageList.children('.message').remove();
-            for (let i = data['results'].length - 1; i >= 0; i--) {
-                drawMessage(data['results'][i]);
-            }
-            messageList.animate({scrollTop: messageList.prop('scrollHeight')});
-        });
-
-    }
-
-    function getMessageById(message) {
-        id = JSON.parse(message).message
-        $.getJSON(`/communications/api/v1/message/${id}/`, function (data) {
-            console.log(data);
-            if (data.user === "admin" ||
-                (data.friend === "SALONI_123" && data.author == "admin")) {
-                drawMessage(data);
-            }
-            messageList.animate({scrollTop: messageList.prop('scrollHeight')});
-        });
-    }
-
-    function sendMessage(recipient, body) {
-        console.log(recipient,body)
-        $.post('/communications/api/v1/message/', {
-            friend: 15,
-            message: "hii"
-        }).fail(function () {
-            alert('Error! Check console!');
-        });
-    }
-
-    
-
-$(document).ready(function () {
-        let friendName = currentRecipient;
-        var socket = new WebSocket(
-        'ws://' + window.location.host +
-        '/ws?session_key=${sessionKey}')
-        // let socket = new WebSocket(
-        //     'ws://' + window.location.host +
-        //     '/ws/communications/' + currentRecipient + '/');
-    console.log(socket);
-    chatInput.keypress(function (e) {
-        if (e.keyCode == 13)
-            chatButton.click();
-    });
-    
-    chatButton.click(function () {
-        if (chatInput.val().length > 0) {
-            sendMessage(currentRecipient, chatInput.val());
-            chatInput.val('');
-        }
-    });
-
-    socket.onmessage = function (e) {
-        console.log("mess");
-        getMessageById(e.data);
-    };
-});
-
-</script>
 
 
 {% endblock %}

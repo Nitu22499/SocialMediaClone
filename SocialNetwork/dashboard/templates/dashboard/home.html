@@ -4,12 +4,13 @@
 
 <div class="container-fluid">
     <div class="row">
-        {% include 'includes/sidebar.html' %}
+            {% include 'includes/sidebar.html' %}
+        
         <div class="col-md-6" style="margin-top:40px">
             <div class = "card border">
                 <div class = "card-body">
                     <div class ="row">
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-sm-1">
                             <figure class ="user_profile">
                                 {% if request.user.user_image %}
                                 <img src="{{ user.user_image.url }}" alt="">
@@ -28,7 +29,7 @@
                                             <li>
                                                 <i class="fa fa-image"></i>
                                                 <label class="fileContainer">
-                                                    <input type="file" name="post_image" required>
+                                                    <input type="file" name="post_image" accept=".mp4" required>
                                                 </label>
                                             </li>
                                             <li>
@@ -63,13 +64,13 @@
                                             <div class="col-10">published: {{ post.post_date|timesince }} ago</div>
                                             {% if request.user.username == post.user.username %}
                                             <div class="col-2">
-                                            <a href="#" data-toggle="modal" data-target="#myDeleteModal">
+                                            <a href="#" data-toggle="modal" data-target="#myDeleteModal{{post.pk}}" id="mod_del">
                                                 <button class="btn btn-danger">
                                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                                 </button></a>
                                             </div>
                                         
-                                            <div class="modal fade" id="myDeleteModal" role="dialog">
+                                            <div class="modal fade" id="myDeleteModal{{post.pk}}" role="dialog">
                                                 <div class="modal-dialog">
                                                 
                                                   <!-- Modal content-->
@@ -104,8 +105,17 @@
                                         <img src="#" alt="">
                                         
                                         <div class="description">
+                        
                                             <img src="{{ post.post_image.url }}"class="img-item " width="600" height="250">
                                             <p>{{ post.post_body }}</p>
+                                           
+                                            {% if .mp4 in post.post_image.url %}  
+                                            <video width="500" height="500" controls >
+                                                <source src="{{post.post_image.url}}" type="video/mp4">
+                                                <b>{{post.post_body}}</b>
+                                            </video>
+                                            {% endif %}
+
                                         </div>
                                         <div class="we-video-info">
                                             <ul>
@@ -125,7 +135,7 @@
                                                         
                                                         {% else %}
                                                         <button id="like{{post.id}}" type="submit"><span class="dislike" data-toggle="tooltip" title="dislike"><i id="disliker" class="fas fa-thumbs-down dislike"></i><ins class="dislike-icon">{{ post.liked.count }}</ins></span></button> 
-                                                      
+
                                                         {% endif %}
                                                     </form> 
                                                 </li>
@@ -225,65 +235,18 @@
                 </div>
            
         </div>
-        <div class="col-md-3">
-            <!-- <h1>Suggestions for you</h1> -->
-        </div>
+    
+            <div id="replaceable-content" class="col-3">
+                {% include 'dashboard/search-user.html' %}
+            </div>      
     </div>
     
 </div>
 {% endblock %}
 {% comment %}
 {% block scripts %}
-
-<script>
-    $( document ).ready(function() {
-       
-        $('.like-form').submit(function(e){
-            e.preventDefault()
-            
-            const post_id = $(this).attr('id');
-            const url = $(this).attr('action');
-            console.log("helo");
-            console.log(url);
-            const icon = this.querySelector('i');
-            console.log(icon)
-            const like_count = this.querySelector('ins');
-            // console.log(like_count.innerHTML );
-
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-                    'post_id':post_id,
-                },
-                success : function(response){
-
-                    if(icon.classList.contains('fas fa-thumbs-up like')) {
-                        
-                        $('#like{{post.id}}').html($('<i/>',{class:'fas fa-thumbs-down dislike'})) ;
-                        // like_count.innerHTML = parseInt(like_count.innerHTML)+1;
-                        // console.log(like_count.innerHTML );
-                        // console.log("IF");
-
-                       
-                    } else {
-                           $('#like{{post.id}}').html($('<i/>',{class:'fas fa-thumbs-up like'}));
-                        //   like_count.innerHTML = parseInt(like_count.innerHTML)-1;
-                        // //   console.log(like_count.innerHTML);
-                        // console.log("Else");
-                         
-                    }
-                    console.log("hi");
-                         
-                    },
-                    error : function(rs, e){
-                        console.log(rs.responseText);
-                    },
-            })
-
-        })
-    });
-</script>
+<script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/vendor/jquery-3.5.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/like.js' %}"></script>
 {% endblock %}
 {% endcomment %}

@@ -40,14 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
     'post',
-    'chat',
-    'ChatMessage',
     'friend',
     'rest_framework',
     'communications',
     'numpy',
     'pandas',
     'sklearn',
+    'tensorflow',
+    'keras',
     
 
 ]

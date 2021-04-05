@@ -1,0 +1,31 @@
+{% load static %}
+{% block right-sidebar %}
+            
+<aside class="sidebar right static">
+    <div class="widget">
+        <h4 class="widget-title">Search Results</h4>
+        {% if users %}
+        <ul class="followers">
+        {% for user in users %}
+
+          <li>
+              <figure>
+                  {% if user.user_image %}
+                  <a href="#" title=""><img src="{{ user.user_image.url }}" alt=""></a>
+                  {% else %}
+                  <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
+                  {% endif %}
+              </figure>
+              <div class="friend-meta">
+                  <h4><a href="" title="">{{ user.username }}</a></h4>
+                  <a href="{% url 'dashboard:profile_view' user.id %}">View Profile</a>           
+              </div>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <center><p>No user found.</p></center>
+      {% endif %}
+    </div>
+</aside>
+{% endblock %}

@@ -8,39 +8,38 @@ from django.views.generic import ListView
 
 from .serializers import NotificationSerializer
 from .models import *
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
-
-class FindFriendsListView(ListView):
+class FindFriendsListView(LoginRequiredMixin, ListView):
     model = FriendRequest
     context_object_name = 'users'
     template_name = "friend/find-friends.html"
     
     def get_context_data(self, **kwargs):
         received_req = self.request.user.friends.values('sender')
-        print(received_req)
+        send_req = list(FriendRequest.objects.filter(sender=self.request.user,status='requested').values_list('receiver__username', flat=True))
+        # print(send_req,received_req)
 
         friend_list_r = FriendRequest.objects.filter(receiver=self.request.user,status='friend')
         friend_list_s = FriendRequest.objects.filter(sender=self.request.user,status='friend')
-        current_user_friends = (friend_list_r|friend_list_s).values('receiver')
-        print(current_user_friends)
-        kwargs['friend_list']=friend_list_r|friend_list_s
         
+        current_user_friends = (friend_list_r|friend_list_s).values('receiver')
+    
+        friend_list = friend_list_r|friend_list_s
+        
+        kwargs['friend_list']=friend_list
 
-        sent_request = list(FriendRequest.objects.filter(sender=self.request.user,status='requested').values_list('receiver__username', flat=True))
+        sent_request = FriendRequest.objects.filter(sender=self.request.user,status='requested')
         kwargs['sent_request']=sent_request
-        print(kwargs['sent_request'])
 
         recieve_request = FriendRequest.objects.filter(receiver=self.request.user,status='requested')
         kwargs['recieve_request']=recieve_request
-        print(kwargs['recieve_request'])
 
-        users = User.objects.exclude(id=self.request.user.id).exclude(username__in=sent_request).exclude(id__in=received_req).exclude(id__in=current_user_friends)
-        # .exclude(id__in=current_user_friends)
-        # .exclude(username=sent_request).exclude(id__in=current_user_friends)
+        users = User.objects.exclude(id=self.request.user.id).exclude(username__in=send_req).exclude(id__in=received_req).exclude(id__in=current_user_friends)
         kwargs['users']=users
-        print(users)
         return kwargs
-
+@login_required
 def send_request(request, username=None):
     if username is not None:
         friend_user = User.objects.get(username=username)
@@ -63,7 +62,7 @@ def send_request(request, username=None):
     else:
         pass
 
-
+@login_required
 def accept_request(request, friend=None):
     if friend is not None:
         friend_user = User.objects.get(username=friend)
@@ -77,5 +76,3 @@ def accept_request(request, friend=None):
             'message': "You accepted friend request",
         }
         return redirect('friend:find-friends')
-
-
