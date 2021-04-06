@@ -6,7 +6,7 @@ from django.urls import reverse_lazy, reverse
 # Create your models here.
 class Post(models.Model):
     user = models.ForeignKey(User,on_delete = models.CASCADE)
-    post_image = models.ImageField(upload_to ='documents/')
+    post_image = models.FileField(upload_to ='documents/')
     post_body = models.TextField(blank = True)
     post_date = models.DateTimeField(default=timezone.now)
     liked = models.ManyToManyField(User,default=None, blank=True, related_name="liked")
