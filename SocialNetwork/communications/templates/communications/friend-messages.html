@@ -18,6 +18,8 @@
                                 <figure>
                                     {% if friend.sender.username != request.user.username and friend.sender.user_image %}
                                     <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
+                                    {% elif friend.receiver.username != request.user.username and friend.sender.user_image %}
+                                    <a href="#" title=""><img src="{{ friend.receiver.user_image.url }}" alt=""></a>
                                     {% else %}
                                     <a href="#" title=""><img src="{% static 'images/user.jpg' %}" alt=""></a>
                                     {% endif %}
@@ -35,24 +37,56 @@
                         <div class="peoples-mesg-box">
                             <div class="conversation-head">
                                 <figure>
-                                    {% if friend.sender.user_image %}
-                                    <a href="#" title=""><img src="{{ friend.sender.user_image.url }}" alt=""></a>
+                                    <!-- <p>user{{ user_image_json }} frnd {{ friend_image_json }}</p> -->
+                                    {% if friend_image_json != "None" %}
+                                    <a href="#" title=""><img src="{{ friend_image_json|slice:'1:-1' }}" alt=""></a>
+                                    {% elif user_image_json != "None" %}
+                                    <a href="#" title=""><img src="{{ user_image_json |slice:'1:-1'}}" alt=""></a>
                                     {% else %}
                                     <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
                                     {% endif %}
                                 </figure>
-                                <span>Chat with {{ friend_name_json|slice:"1:-1" }}</span>
+                                <span class="friendName" id="{{ friend_name_json|slice:'1:-1' }}">Chat with {{ friend_name_json|slice:"1:-1" }}</span>
+                            </div>                          
+                            <div>
+                                <ul id="messages" class="messages">
+                                    <!-- {# Messages go here #} -->
+                                    {% for chat in chat %}
+                                        {% if chat.author.username == request.user.username %}
+                                            <li class="message right">
+                                                <div class="avatar">{{ chat.friend}}</div>
+                                                    <div class="text_wrapper">
+                                                        <div class="text">{{chat.message}}<br>
+                                                        <span class="small">{{chat.timestamp}}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        {% else %}
+                                            <li class="message left">
+                                                <div class="avatar">{{ chat.author.username}}</div>
+                                                    <div class="text_wrapper">
+                                                        <div class="text">{{chat.message}}<br>
+                                                        <span class="small">{{chat.timestamp}}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
                             </div>
-                            <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-                            <div class="message-text-container">
-                                <form onsubmit=" return false;">
-                                    <div class="msg-box msg-box--background" >
-                                        <div id="new-message-chat"></div>
-                                    </div>
-                                    <textarea id="chat-message-input" placeholder="Type your message"></textarea>
-                                    <em id="typing"></em>
-                                    <button title="send" id="chat-message-submit"><i class="fa fa-paper-plane btn btn-primary" aria-hidden="true"></i></button>
-                                </form>
+                            <div class="panel-footer">
+                                <div class="input-group">
+                                    <form onsubmit="" method = "POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" id="userid" value={{request.user.username}}>
+                                         <input id="chat-input" type="text" class="form-control input"
+                                                placeholder="Type your message here ..."
+                                                maxlength="500">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-info btn" id="btn-send">Send</button>
+                                        </span>
+                                    </form>                                          
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -63,44 +97,12 @@
     </div>
 </div>
 
-{% endblock %}
-{% block scripts %}
 
-<script>
-
-        let friendName = {{ friend_name_json }};
-        let username = {{ username }};
-
-        let chatSocket = new WebSocket(
-            'ws://' + window.location.host +
-            '/ws/chat/' + friendName + '/');
+<script type="text/javascript" src="{% static 'js/vendor/jquery-3.5.1.min.js' %}"></script>
+  <script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+  <script type="text/javascript" src="{% static 'js/message.js' %}"></script>
 
 
 
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-        };
-
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
-
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
-    </script>
 
 {% endblock %}

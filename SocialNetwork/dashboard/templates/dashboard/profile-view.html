@@ -7,11 +7,12 @@
     <div class="row">
         <div class="col-md-2">
             <figure class ="user_profile_image">
-                {% if request.user.user_image %}
+                {% if user.user_image %}
                 <img src="{{ user.user_image.url }}" alt="">
                 {% else %}
                 <img src="{% static 'images/user.jpg' %}" alt="">
                 {% endif %}
+                {% if user.is_authenticated and user == request.user %}
                 <a href="#" class="myfloat" data-toggle="modal" data-target="#myModal">
                     <i class="fa fa-camera my-float"></i>
                 </a>
@@ -22,7 +23,7 @@
                       <div class="modal-content">
                         <div class="modal-header">
                           <h4 class="modal-title">Upload Profile pic ...</h4>
-                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <button type="button" class="close" data-dismiss="modal" onclick="javascript:window.location.reload()" >&times;</button>
                         </div>
                         <div class="modal-body">
                             <iframe class="embed-responsive-item" allowfullscreen src="{% url 'dashboard:uploadprofile' %}"></iframe>
@@ -30,19 +31,20 @@
                           
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="javascript:window.location.reload()">Close</button>
                         </div>
                       </div>
                       
                     </div>
                   </div>
+                  {% endif %}
             </figure>
         </div>
-        
+               
         <div class="col-md-6">
             <div class="profilecontent">
-                <h1 class="title is-1">@{{ request.user }}</h1>
-                <p class="subtitle is-3">{% if request.user.first_name %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}</p>
+                <h1 class="title is-1">@{{ user }}</h1>
+                <p class="subtitle is-3">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% endif %}</p>
                                 
                 <div class="row">
                 
@@ -62,14 +64,14 @@
                     </div>
                  
                     <div class="col-md-3">
-                      <p class="heading">Following</p>
-                      <p class="title">{{ following_count }}</p>
+                      <p class="heading">Friends</p>
+                      <p class="title">{{ friends.count }}</p>
                     </div>
                   
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                       <p class="heading">Followers</p>
                       <p class="title">{{ followers_count }}</p>
-                    </div>
+                    </div> -->
                   
               </div>
             </div>
@@ -105,8 +107,8 @@
 <div class="container">
     <div class="row">
         {% for post in posts %}
-        <div class="col-md-4">
-            <img src="{{ post.post_image.url }}"width="600" height="600">
+        <div class="col-md-4" style="padding:20px">
+            <img src="{{ post.post_image.url }}" class="img-item " width="600" height="600">
         </div>
         {% endfor %}
     </div>

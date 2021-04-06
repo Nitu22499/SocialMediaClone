@@ -1,62 +1,12 @@
 @import url("fonts.css");
 
-/*
-
-[Master Stylesheet]
-
-Project Name: Gatherly (HMTL Template)
-Version:    1.1
-Last change:  4/september/18
-
-====INDEX=====
-
-01- general styling
-02- sticky header 
-03- login/landing page
-04- home page topbar
-05- timeline area
-06- messages dropdowns
-07- sidebar widgets
-08- post sharing area
-09- social icons
-10- comment area 
-11- search area
-12- footer
-13- widgets
-14- side panel
-15- short profile widget
-16- svg button styling
-17- 404 error page 
-18- contact page
-19- knowledge base page 
-20- faq's page
-21- photos page
-22- favourit page 
-23- edit basic info page
-24- notification page
-25- message page
-26- loadmore 
-27- responsive header
-28- main menu
-39- blog pages
-40- blog detail
-
-*/
-
-
-/*=============== Fonts source Muli, Hobostd ===================*/
-
 @import url('https://fonts.googleapis.com/css?family=Muli:300,400,400i,500,700,800');
 @import url('https://fonts.googleapis.com/css?family=Satisfy');
 @font-face {
     font-family: HoboStd;
     src: url('../fonts/HoboStd.ttf'), url('../fonts/HoboStd.eot');
 }
-
-
-/*===============
-***General Styling 
-===============*/
+  
 html,body{
 	font-family: "Muli", "Segoe Ui";
 }
@@ -68,6 +18,217 @@ body {
     overflow-x: hidden;
     color: #545454;
 }
+.titanic {
+    float: none;
+}
+
+#chat-input {
+    display: inline-block;
+}
+.messages {
+    position: relative;
+    padding: 10px 10px 0 10px;
+    margin: 0 0 0 0;
+    height: 500px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.messages .message {
+    clear: both;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.messages .message.left .avatar {
+    background-color: #f55946;
+    float: left;
+}
+
+.messages .message.left .text_wrapper {
+    background-color: #ffe6cb;
+    margin-left: 20px;
+}
+
+.messages .message.left .text_wrapper::after, .messages .message.left .text_wrapper::before {
+    right: 100%;
+    border-right-color: #ffe6cb;
+}
+
+.messages .message.left .text {
+    color: #b00020;
+}
+
+.messages .message.right .avatar {
+    background-color: #6877fd;
+    float: right;
+}
+
+.messages .message.right .text_wrapper {
+    background-color: #c7eafc;
+    margin-right: 20px;
+    float: right;
+}
+
+.messages .message.right .text_wrapper::after, .messages .message.right .text_wrapper::before {
+    left: 100%;
+    border-left-color: #c7eafc;
+}
+
+.messages .message.right .text {
+    color: #45829b;
+}
+
+.messages .message .avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+    color: white;
+    padding-top: 18px;
+}
+
+.messages .message .text_wrapper {
+    display: inline-block;
+    padding: 15px;
+    border-radius: 6px;
+    width: calc(100% - 85px);
+    min-width: 100px;
+    position: relative;
+}
+
+.messages .message .text_wrapper::after, .messages .message .text_wrapper:before {
+    top: 18px;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.messages .message .text_wrapper::after {
+    border-width: 13px;
+    margin-top: 0;
+}
+
+.messages .message .text_wrapper::before {
+    border-width: 15px;
+    margin-top: -2px;
+}
+
+.messages .message .text_wrapper .text {
+    font-size: 18px;
+    font-weight: 300;
+}
+
+body {
+    font-size: 15px;
+}
+
+#messages {
+    position: relative;
+    padding: 10px 10px 0 10px;
+    margin: 0 0 0 0;
+    height: 250px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.messages .message {
+    clear: both;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.messages .message.left .avatar {
+    background-color: #f55946;
+    float: left;
+}
+
+.messages .message.left .text_wrapper {
+    background-color: #ffe6cb;
+    margin-left: 20px;
+}
+
+.messages .message.left .text_wrapper::after, .messages .message.left .text_wrapper::before {
+    right: 100%;
+    border-right-color: #ffe6cb;
+}
+
+.messages .message.left .text {
+    color: #c48843;
+}
+
+.messages .message.right .avatar {
+    background-color: #6877fd;
+    float: right;
+}
+
+.messages .message.right .text_wrapper {
+    background-color: #c7eafc;
+    margin-right: 20px;
+    float: right;
+}
+
+.messages .message.right .text_wrapper::after, .messages .message.right .text_wrapper::before {
+    left: 100%;
+    border-left-color: #c7eafc;
+}
+
+.messages .message.right .text {
+    color: #45829b;
+}
+
+.messages .message .avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+    color: white;
+    padding-top: 18px;
+}
+
+.messages .message .text_wrapper {
+    display: inline-block;
+    padding: 20px;
+    border-radius: 6px;
+    width: calc(100% - 85px);
+    min-width: 100px;
+    position: relative;
+}
+
+.messages .message .text_wrapper::after, .messages .message .text_wrapper:before {
+    top: 18px;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.messages .message .text_wrapper::after {
+    border-width: 13px;
+    margin-top: 0;
+}
+
+.messages .message .text_wrapper::before {
+    border-width: 15px;
+    margin-top: -2px;
+}
+
+.messages .message .text_wrapper .text {
+    font-size: 18px;
+    font-weight: 300;
+}
+
+body {
+    font-size: 15px;
+}
+
 
 .profilecontainer{
     margin-top:50px;
@@ -125,6 +286,11 @@ button:focus {
 
 img {
     height: auto;
+    max-width: 100%;
+}
+
+.img-item {
+    height: -webkit-fill-available;
     max-width: 100%;
 }
 
@@ -921,11 +1087,24 @@ header.sticky {
 figure[class ="user_profile"]>img{
     
     border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+   
 }
+
+@media only screen and (max-width: 570px) {
+    figure[class ="user_profile"]>img{
+        width: 12%;
+        display: inline-block;
+    }
+}
+
 figure[class ="user_profile_image"]>img{
     height: 180px;
-  width: 250px;
+    width: 250px;
     border-radius: 50%;
+
 }
 
 .edit-phto {
@@ -1182,6 +1361,12 @@ figure[class ="user_profile_image"]>img{
     padding-bottom: 20px;
     position:fixed;
     width: 20%;
+}
+
+@media only screen and (max-width: 976px) {
+    #sidebar {
+        display: none;
+    }
 }
 
 .sidebar .widget {
@@ -2024,7 +2209,7 @@ li.post-comment .comet-avatar {
     bottom: 2px;
     position: absolute;
     right: 0;
-    background: none;
+    background-color: primary;
 }
 
 
@@ -3485,12 +3670,10 @@ a.add-butn {
     font-size: 13px;
     line-height: initial;
     padding: 5px 10px;
-    position: absolute;
     right: 0;
     text-transform: capitalize;
     top: 10px;
 }
-
 .pepl-info > span {
     float: left;
     font-size: 13px;
@@ -7799,7 +7982,9 @@ a.main-btn {
     padding: 12px 30px;
 }
 
-
+span[class="small"]{
+    font-size:50%;
+}
 /*--- contact page2 with branches ---*/
 .small-map {
     float: left;
@@ -10235,3 +10420,12 @@ div [class="card-body-info"]{
 .my-float{
 	margin-top:22px;
 }
+
+/* .img-item {
+    width: 120px;
+    height: 120px;
+    height: auto;
+    float: left;
+    margin: 3px;
+    padding: 3px;
+} */

@@ -25,7 +25,7 @@ SECRET_KEY = 'ny0@wwcq2(1@pnk)w8^)toy7fl)m&1_jgf5j15g88a6673su^='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,13 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
     'post',
-    'chat',
     'friend',
     'rest_framework',
     'communications',
     'numpy',
     'pandas',
     'sklearn',
+    'tensorflow',
+    'keras',
     
 
 ]
@@ -96,6 +97,14 @@ CHANNEL_LAYERS = {
     },
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    
+}
+
+MESSAGES_TO_LOAD = 15
 
 
 # Database

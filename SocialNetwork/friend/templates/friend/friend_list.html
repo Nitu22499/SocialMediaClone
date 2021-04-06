@@ -13,10 +13,10 @@
                 {% endif %}
             </figure>
             <div class="friendz-meta">
-                {% if friend.user.username == request.user.username %}
-                <a href="time-line.html">{{ friend.friend.username }}</a>
+                {% if friend.sender.username == request.user.username %}
+                <a href="time-line.html">{{ friend.receiver.username }}</a>
                 {% else %}
-                <a href="time-line.html">{{ friend.user.username }}</a>
+                <a href="time-line.html">{{ friend.sender.username }}</a>
                 {% endif %}
                 <i><a href="https://wpkixx.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583a392a363d2b183f35393134763b3735">[email&#160;protected]</a></i>
             </div>

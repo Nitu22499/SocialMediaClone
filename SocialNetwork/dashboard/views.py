@@ -8,9 +8,12 @@ from django.contrib.auth.views import LoginView, LogoutView
 from .models import *
 from .forms import UserSignUpForm, EditProfileForm, UploadProfilePicForm
 from post.models import *
+from friend.models import FriendRequest
 from django.forms.models import model_to_dict
 from post.views import *
-
+from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 class Login(LoginView):
@@ -35,19 +38,33 @@ class RegisterView(CreateView):
 
 
  
-class Logout(LogoutView):
+class Logout(LoginRequiredMixin,LogoutView):
     pass
 
-class ProfileView(CreateView):
+class ProfileView(LoginRequiredMixin,CreateView):
     template_name = 'dashboard/profile-view.html'
     model=Post
     def get_context_data(self, **kwargs):
+        # print(self.kwargs['pk'])
         user=self.request.user
+        kwargs['user']=user
         posts=Post.objects.filter(user=user)
         kwargs['posts']=posts
+        friend_list_r = FriendRequest.objects.filter(receiver=user,status='friend')
+        friend_list_s = FriendRequest.objects.filter(sender=user,status='friend')
+        kwargs['friends']=friend_list_r|friend_list_s
         return kwargs
+@login_required
+def profile_view(request, pk):
+    # print(request)
+    user=User.objects.get(id=pk)
+    posts=Post.objects.filter(user=user)
+    friend_list_r = FriendRequest.objects.filter(receiver=user,status='friend')
+    friend_list_s = FriendRequest.objects.filter(sender=user,status='friend')
+    return render(request, 'dashboard/profile-view.html', {'user':user,'posts': posts,'friends':friend_list_r|friend_list_s})
+    
 
-class Edit_Profile(FormView):
+class Edit_Profile(LoginRequiredMixin,FormView):
     model = User
     form_class = EditProfileForm
     template_name = 'dashboard/edit_profile.html'
@@ -88,17 +105,40 @@ class Edit_Profile(FormView):
         messages.success(self.request, 'Edited successfully')
         return super().form_valid(form)
 
-
     
+@login_required
+def ajax_search(request):   
+    if request.is_ajax():
+        try:
+            user = request.GET.get('user', None)
+            user = User.objects.filter(username__icontains=user).values()
+            html = render_to_string(
+                template_name="dashboard/search.html", 
+                context={"users": user}
+            )
+
+            data_dict = {"html_from_view": html}
+            print(data_dict)
+            return JsonResponse(data=data_dict, safe=False)
+        except:
+            return reverse_lazy('dashboard:search')
+
+@login_required
 def searchUser(request):
     
-    if request.method == 'GET': # this will be GET now      
-        searchfriend =  request.GET.get('searchfriend') # do some research what it does       
-        user = User.objects.filter(username=searchfriend)
-        print(user)
-        return render(request,'dashboard/profile-view.html',{'user':user})
+    if request.method == 'GET': # this will be GET now  
+        searchfriend =request.GET.get('searchfriend') 
+        print(searchfriend)  
+        try:     
+            user = User.objects.get(username=searchfriend)
+            posts=Post.objects.filter(user=user)
+            friend_list_r = FriendRequest.objects.filter(receiver=user,status='friend')
+            friend_list_s = FriendRequest.objects.filter(sender=user,status='friend')
+            return render(request, 'dashboard/profile-view.html', {'user':user,'posts': posts,'friends':friend_list_r|friend_list_s})
+        except:
+            return redirect(reverse_lazy('post:home'))
 
-class UploadProfilePic(FormView):
+class UploadProfilePic(LoginRequiredMixin, FormView):
     model = User
     form_class = UploadProfilePicForm
     template_name = 'dashboard/upload-profile.html'
@@ -131,6 +171,9 @@ class UploadProfilePic(FormView):
         User.objects.filter(username=self.object).update(
             user_image =form.cleaned_data['user_image'],
         )
+        myfile = self.request.FILES['user_image']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
         messages.success(self.request, 'Image uploaded successfully')
         return super().form_valid(form)
 

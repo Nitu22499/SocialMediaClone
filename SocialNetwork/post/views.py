@@ -10,7 +10,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
+import os
+from keras.preprocessing import image
+from keras.models import load_model
+import numpy as np
+
 # Create your views here.
 # ml
 # import numpy as np
@@ -18,7 +23,22 @@ from django.http import Http404
 from sklearn.externals import joblib
 # endml
 
-
+def predict_node_or_safe(post_image):
+    model = load_model('4_march_23_44.h5')
+    # print(model.summary())
+    test_image = image.load_img(post_image, target_size = (64,64))
+    test_image = image.img_to_array(test_image)
+    test_image = np.expand_dims(test_image, axis = 0)
+    result = model.predict(test_image)
+    # print(result)
+    # training_set.class_indices
+    if(result[0][0] == 1):
+        prediction = 'nude image'
+    else:
+        prediction = 'normal image'
+        
+    # print(prediction)
+    return prediction
 
 
 # def _get_profane_prob(prob):
@@ -41,10 +61,10 @@ def predict(text):
 
     result = model.predict(vectorizer.transform(text))
     if result == 1:
-        print('it contains vulgar words', text )
+        # print('it contains vulgar words', text )
         return result
     else:
-        print('It is normal message', text)
+        # print('It is normal message', text)
         return result
         
             
@@ -53,25 +73,38 @@ def predict(text):
 
 
 
-class HomeView(CreateView):
+class HomeView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'dashboard/home.html'
     form_class = PostForm
     success_url = reverse_lazy('post:home')
 
-    def form_valid(self, form):
-        print(form)
+    def form_valid(self, form): 
+             
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
-        messages.success(self.request, 'File uploaded!')
-        return super(HomeView, self).form_valid(form)
+        # print(self.object.post_image.path)
+
+        res = predict_node_or_safe(self.object.post_image.path)
+
+        if res == 'normal image':
+            # print(self.object)
+            
+            messages.success(self.request, 'File uploaded!')
+            return super(HomeView, self).form_valid(form)
+        elif res == 'nude image': 
+            # print(self.object)
+            self.object.delete()
+            # print(self.object)
+            messages.warning(self.request,'Warning: You have abusive post. Please maintain Decorum. Otherwise user will be blocked')
+            return HttpResponseRedirect(self.get_success_url())
                 
     def get_context_data(self, **kwargs):
         posts = Post.objects.all().order_by('-post_date')
-        print(posts)
+        # print(posts)
         kwargs['posts'] = posts
-        print(kwargs['posts'])
+        # print(kwargs['posts'])
         return super().get_context_data(**kwargs)
 
 @login_required
@@ -102,46 +135,28 @@ def like_unlike_post(request):
 
     return redirect('post:home')
 
-
+@login_required
 def create_comment(request, post_id=None):
     counter=0
     if request.method == "POST":
         post = Post.objects.get(id=post_id)
         comment = post.comments.create(user=request.user, content=request.POST.get('content'))
-        print(comment.content)
+        # print(comment.content)
 
         val=predict([comment.content])
-        print(val[0])
+        # print(val[0])
         if val==1:
             messages.warning(request, 'Warning: You have used abusive word. Please maintain Decorum. Otherwise user will be blocked')
             counter=counter+1
-            print(counter)
+            # print(counter)
         return redirect(reverse_lazy('post:home'))
     else:
         return redirect(reverse_lazy('post:home'))
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    # template_name = 'dashboard/home.html'
     success_url = reverse_lazy('post:home')
-
-    # def get_object(self, *args, **kwargs):
-    #     pk = self.kwargs.get('pk')
-    #     print(pk)
-    #     obj = Post.objects.get(pk=pk)
-    #     print(obj)
-    #     if not obj.user == self.request.user:
-    #         messages.warning(self.request, 'You need to be the author of the post in order to delete it')
-    #     return obj.delete()
-
 
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
-    # template_name = 'dashboard/home.html'
     success_url = reverse_lazy('post:home')
-
-    # def get_object(self, *args, **kwargs):
-    #     pk = self.kwargs.get('pk')
-    #     print(pk)
-    #     Comment.objects.filter(id=pk).delete()
-        

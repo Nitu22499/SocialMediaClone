@@ -60,7 +60,7 @@
                                                         {% endif %}
                                                     </figure>
                                                     <div class="friendz-meta">
-                                                        {% if friend.sender.username == request.sender.username %}
+                                                        {% if friend.sender.username == request.user.username %}
                                                         <a href="{% url 'communications:messages-with-one-friend' friend.receiver.username %}">{{ friend.receiver.username }}</a>
                                                         {% else %}
                                                         <a href="{% url 'communications:messages-with-one-friend' friend.sender.username %}">{{ friend.sender.username }}</a>

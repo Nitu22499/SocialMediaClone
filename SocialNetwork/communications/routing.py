@@ -1,7 +1,7 @@
-from django.urls import re_path
+from django.conf.urls import url
 
-from .consumers import *
+from communications.consumers import CommunicationConsumer
 
 websocket_urlpatterns = [
-    re_path(r'^ws/chat/(?P<friendname>[^/]+)/$', ChatConsumer),
+   url(r'^ws/communications/(?P<friend>[^/]+)/$', CommunicationConsumer),
 ]
