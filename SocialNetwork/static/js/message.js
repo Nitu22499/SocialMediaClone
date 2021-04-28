@@ -42,7 +42,7 @@
         const data = JSON.parse(e.data);
         console.log('data',data);
         drawMessage(data) ;
-       
+    
     };
     
     function drawMessage(message) {

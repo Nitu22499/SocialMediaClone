@@ -111,7 +111,7 @@
                                            
                                             {% if .mp4 in post.post_image.url %}  
                                             <video width="500" height="500" controls >
-                                                <source src="{{post.post_image.url}}" type="video/mp4">
+                                                <source src="{{post.post_image.url}}" type="video/*">
                                                 <b>{{post.post_body}}</b>
                                             </video>
                                             {% endif %}

@@ -8,9 +8,10 @@ from django.views.generic import TemplateView
 from dashboard.models import User
 from friend.models import FriendRequest
 from communications.models import Message
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class All_messages(TemplateView):
+class All_messages(LoginRequiredMixin,TemplateView):
     model = FriendRequest
     template_name = "communications/all-messages.html"
 
@@ -19,18 +20,18 @@ class All_messages(TemplateView):
         friend_list_s = FriendRequest.objects.filter(sender=self.request.user,status='friend')
        
         friend_list = friend_list_r|friend_list_s
-        for friend in friend_list :
-            if friend.sender.id == self.request.user.id :
-                print(friend.receiver.username)
-            else:
-                print(friend.sender.username)
+        # for friend in friend_list :
+        #     if friend.sender.id == self.request.user.id :
+        #         print(friend.receiver.username)
+        #     else:
+        #         print(friend.sender.username)
 
         kwargs['friend_list']=friend_list
-        print(kwargs['friend_list'])
+        # print(kwargs['friend_list'])
         return kwargs
 
 
-# @login_required(login_url=reverse_lazy("dashboard:login"))
+@login_required
 def messages_with_one_friend(request, friend):
     if request.user.username == friend:
         return redirect(reverse_lazy('communications:all-messages'))
@@ -53,19 +54,19 @@ def messages_with_one_friend(request, friend):
     usr = friends.filter(receiver__username=friend)
     if usr:
         user_url = usr[0].receiver.user_image.url
-    print(user_url,friend_url)
+    # print(user_url,friend_url)
     
     chat_r = Message.objects.filter(friend__username=request.user.username, author__username=friend)
-    print(request.user.username,friend,chat_r)
+    # print(request.user.username,friend,chat_r)
     chat_s = Message.objects.filter(friend__username=friend, author__username=request.user.username)
-    print(chat_s)
+    # print(chat_s)
     chat = (chat_r | chat_s).order_by('timestamp')
-    print(chat)
+    # print(chat)
     return render(request, "communications/friend-messages.html", {
         'chat':chat,
         'friends': friends,
-        'friend_image_json':mark_safe(json.dumps(str(friend_url))),
-        'user_image_json':mark_safe(json.dumps(str(user_url))),
+        'friend_image_json':friend_url,
+        'user_image_json':user_url,
         'friend_name_json': mark_safe(json.dumps(friend)),
         'username': mark_safe(json.dumps(request.user.username)),
     })

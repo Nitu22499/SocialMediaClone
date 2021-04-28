@@ -8,6 +8,10 @@ class User(AbstractUser):
     date_of_birth = models.DateField(null = True)
     gender = models.CharField(max_length=10, default='Male', choices=(('MALE', 'MALE'), ('FEMALE', 'FEMALE')))
     user_image = models.ImageField(null= True)
+    bad_word_count = models.IntegerField(default=0)
+    bad_msg_count = models.IntegerField(default=0)
+    nude_count = models.IntegerField(default=0)
+
     
     def __str__(self):
         return self.username

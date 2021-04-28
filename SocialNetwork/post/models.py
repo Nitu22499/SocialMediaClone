@@ -10,6 +10,7 @@ class Post(models.Model):
     post_body = models.TextField(blank = True)
     post_date = models.DateTimeField(default=timezone.now)
     liked = models.ManyToManyField(User,default=None, blank=True, related_name="liked")
+    
 
     class Meta:
         ordering = ['-post_date',]
@@ -37,6 +38,6 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     created_at = models.DateTimeField(default=timezone.now)
-
+    
     def __str__(self):
         return str(self.pk)

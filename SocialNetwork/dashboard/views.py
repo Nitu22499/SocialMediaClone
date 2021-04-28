@@ -18,8 +18,18 @@ from django.contrib.auth.decorators import login_required
 
 class Login(LoginView):
     template_name = 'dashboard/login.html'
-    
-
+    def form_invalid(self, form):
+        
+        try:
+            user=form.cleaned_data['username']
+            # print(user)
+            u=User.objects.get(username=user)
+            if not u.is_active :
+                return render(self.request, "dashboard/block.html", {})
+            
+        except:
+            return self.render_to_response(self.get_context_data(form=form))
+       
 class RegisterView(CreateView):
     model = User
     form_class = UserSignUpForm
@@ -177,4 +187,5 @@ class UploadProfilePic(LoginRequiredMixin, FormView):
         messages.success(self.request, 'Image uploaded successfully')
         return super().form_valid(form)
 
-    
+def block(request):
+    return render(request, "dashboard/block.html", {})
