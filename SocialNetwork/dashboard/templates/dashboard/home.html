@@ -29,7 +29,7 @@
                                             <li>
                                                 <i class="fa fa-image"></i>
                                                 <label class="fileContainer">
-                                                    <input type="file" name="post_image" accept=".mp4" required>
+                                                    <input type="file" name="post_image" accept="image/*,video/*" required>
                                                 </label>
                                             </li>
                                             <li>
@@ -105,16 +105,19 @@
                                         <img src="#" alt="">
                                         
                                         <div class="description">
-                        
-                                            <img src="{{ post.post_image.url }}"class="img-item " width="600" height="250">
-                                            <p>{{ post.post_body }}</p>
-                                           
+                                    
+                                            <p>{{post.post_image.url}}</p>
+                                            <!-- <p>{{ if .mp4 in post.post_image.url}}</p> -->
                                             {% if .mp4 in post.post_image.url %}  
                                             <video width="500" height="500" controls >
                                                 <source src="{{post.post_image.url}}" type="video/*">
                                                 <b>{{post.post_body}}</b>
                                             </video>
+                                            {% else %}
+                                            <img src="{{ post.post_image.url }}"class="img-item " width="600" height="250">
+                                            <p>{{ post.post_body }}</p>
                                             {% endif %}
+                                            
 
                                         </div>
                                         <div class="we-video-info">
