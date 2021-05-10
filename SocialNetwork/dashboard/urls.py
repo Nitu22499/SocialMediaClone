@@ -13,6 +13,7 @@ urlpatterns = [
     path('edit_profile/',Edit_Profile.as_view(), name='edit_profile'),
     path('upload-profile-pic/', UploadProfilePic.as_view(), name = 'uploadprofile'),
     path('search/', searchUser, name = 'search'),
+    path('block/', block, name = 'block'),
     path('ajax-search/', ajax_search, name = 'ajax-search'),
     # path('ajax-search/', autocompleteModel, name = 'ajax-search'),
     

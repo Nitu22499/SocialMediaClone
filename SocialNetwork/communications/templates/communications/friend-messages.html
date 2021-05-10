@@ -6,12 +6,39 @@
 <div class="container-fluid">
     <div class="row">
         {% include 'includes/sidebar.html' %}
-        <div class="col-md-8" style="margin-top:40px">
+        <div class="col-md-8 col-sm-12" style="margin-top:20px">
             {% block center_content %}
-            <div class="central-meta">
-                <div class="messages">
-                    <h5 class="f-title"><i class="fa fa-bell" aria-hidden="true"></i>All Messages </h5>
-                    <div class="message-box">
+            <div class="central-meta" style="height: 548px;">
+                <div class="row">
+                        <div class="header col-md-4">
+                            <div class="conversation-head">
+                            <!-- <figure>
+                                {% if request.user.user_image.url %}
+                                <a href="#" title=""><img src="{{request.user.user_image.url}}" alt=""></a>
+                                {% else %}
+                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                {% endif %}
+                            </figure> -->
+                            <span id="{{request.user.username}}">{{request.user.username}}</span>
+                        </div>
+                    </div>
+                    <div class="header col-md-8">
+                        <div class="conversation-head">
+                            <figure>
+                                {% if friend_image_json %}
+                                <a href="#" title=""><img src="{{ friend_image_json.url }}" alt=""></a>
+                                {% elif user_image_json %}
+                                <a href="#" title=""><img src="{{ user_image_json.url }}" alt=""></a>
+                                {% else %}
+                                <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
+                                {% endif %}
+                            </figure>
+                            <span class="friendName" id="{{ friend_name_json|slice:'1:-1' }}">Chat with {{ friend_name_json|slice:"1:-1" }}</span>
+                        </div>      
+                    </div>
+                </div>
+                <div class="row" > 
+                    <div class="messages col-md-4 col-sm-2" > 
                         <ul class="peoples">
                             {% for friend in friends %}
                             <li>
@@ -33,64 +60,54 @@
                                 </div>
                             </li>
                             {% endfor %}
-                        </ul>
-                        <div class="peoples-mesg-box">
-                            <div class="conversation-head">
-                                <figure>
-                                    <!-- <p>user{{ user_image_json }} frnd {{ friend_image_json }}</p> -->
-                                    {% if friend_image_json != "None" %}
-                                    <a href="#" title=""><img src="{{ friend_image_json|slice:'1:-1' }}" alt=""></a>
-                                    {% elif user_image_json != "None" %}
-                                    <a href="#" title=""><img src="{{ user_image_json |slice:'1:-1'}}" alt=""></a>
-                                    {% else %}
-                                    <a href="#" title=""><img src="{% static 'images/default.jpg' %}" alt=""></a>
-                                    {% endif %}
-                                </figure>
-                                <span class="friendName" id="{{ friend_name_json|slice:'1:-1' }}">Chat with {{ friend_name_json|slice:"1:-1" }}</span>
-                            </div>                          
-                            <div>
-                                <ul id="messages" class="messages">
-                                    <!-- {# Messages go here #} -->
-                                    {% for chat in chat %}
-                                        {% if chat.author.username == request.user.username %}
-                                            <li class="message right">
-                                                <div class="avatar">{{ chat.friend}}</div>
-                                                    <div class="text_wrapper">
-                                                        <div class="text">{{chat.message}}<br>
-                                                        <span class="small">{{chat.timestamp}}</span>
+                         </ul>
+                    </div>
+                    <div class="messages col-md-8 col-sm-10">
+    
+                        <div class="message-box">
+                            <div class="peoples-mesg-box">             
+                                <div class="outer-message-box">
+                                    <ul id="messages" class="messages">
+                                        <!-- {# Messages go here #} -->
+                                        {% for chat in chat %}
+                                            {% if chat.author.username == request.user.username %}
+                                                <li class="message right">
+                                                    <!-- <div class="avatar">{{ chat.friend}}</div> -->
+                                                        <div class="text_wrapper">
+                                                            <div class="text">{{chat.message}}<br>
+                                                            <span class="small">{{chat.timestamp}}</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                        {% else %}
-                                            <li class="message left">
-                                                <div class="avatar">{{ chat.author.username}}</div>
-                                                    <div class="text_wrapper">
-                                                        <div class="text">{{chat.message}}<br>
-                                                        <span class="small">{{chat.timestamp}}</span>
+                                                </li>
+                                            {% else %}
+                                                <li class="message left">
+                                                    <!-- <div class="avatar">{{ chat.author.username}}</div> -->
+                                                        <div class="text_wrapper">
+                                                            <div class="text">{{chat.message}}<br>
+                                                            <span class="small">{{chat.timestamp}}</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="panel-footer">
-                                <div class="input-group">
-                                    <form onsubmit="" method = "POST">
-                                        {% csrf_token %}
-                                        <input type="hidden" id="userid" value={{request.user.username}}>
-                                         <input id="chat-input" type="text" class="form-control input"
-                                                placeholder="Type your message here ..."
-                                                maxlength="500">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-info btn" id="btn-send">Send</button>
-                                        </span>
-                                    </form>                                          
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="panel-footer">
+                                    <div class="input-group">
+                                        <form onsubmit="" method = "POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" id="userid" value={{request.user.username}}>
+                                             <input id="chat-input" type="text" class="form-control input"
+                                                    placeholder="Type your message here ...">
+                                                <button type="submit" class="btn btn-info btn" id="btn-send">Send</button>
+                                        </form>                                          
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
              {% endblock %}
         </div>
