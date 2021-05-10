@@ -24,9 +24,9 @@ from sklearn.externals import joblib
 # endml
 
 def predict_node_or_safe(post_image):
-    model = load_model('4_march_23_44.h5')
+    model = load_model('model_saved.h5')
     # print(model.summary())
-    test_image = image.load_img(post_image, target_size = (64,64))
+    test_image = image.load_img(post_image, target_size = (224,224))
     test_image = image.img_to_array(test_image)
     test_image = np.expand_dims(test_image, axis = 0)
     result = model.predict(test_image)
@@ -97,7 +97,25 @@ class HomeView(LoginRequiredMixin, CreateView):
             # print(self.object)
             self.object.delete()
             # print(self.object)
-            messages.warning(self.request,'Warning: You have abusive post. Please maintain Decorum. Otherwise user will be blocked')
+            p = User.objects.get(id=self.request.user.id)
+            if p.nude_count < 3 :
+                messages.warning(self.request, 'Warning: You have used abusive post. Please maintain Decorum. Otherwise user will be blocked')
+            
+                print(p.nude_count)
+                p.nude_count = p.nude_count + 1
+                print(p.nude_count)
+                p.save()
+            # print(counter)
+            if p.nude_count >= 3 :
+            
+                print(p.is_active)
+                p.is_active = False
+                p.save()
+                print(p.is_active)
+                
+                messages.warning(self.request, 'You account is suspended!! You have used abusive post despite the warning ')
+                return render(self.request, "dashboard/block.html", {})
+        
             return HttpResponseRedirect(self.get_success_url())
                 
     def get_context_data(self, **kwargs):
@@ -137,18 +155,34 @@ def like_unlike_post(request):
 
 @login_required
 def create_comment(request, post_id=None):
-    counter=0
+    
     if request.method == "POST":
         post = Post.objects.get(id=post_id)
         comment = post.comments.create(user=request.user, content=request.POST.get('content'))
-        # print(comment.content)
+        print(comment.id)
 
         val=predict([comment.content])
         # print(val[0])
+        p = User.objects.get(id=request.user.id)
         if val==1:
-            messages.warning(request, 'Warning: You have used abusive word. Please maintain Decorum. Otherwise user will be blocked')
-            counter=counter+1
+            if p.bad_word_count < 3 :
+                messages.warning(request, 'Warning: You have used abusive word. Please maintain Decorum. Otherwise user will be blocked')
+            
+                print(p.bad_word_count)
+                p.bad_word_count = p.bad_word_count + 1
+                print(p.bad_word_count)
+                p.save()
             # print(counter)
+        if p.bad_word_count >= 3 :
+           
+            print(p.is_active)
+            p.is_active = False
+            p.save()
+            print(p.is_active)
+            
+            messages.warning(request, 'You account is suspended!! You have used abusive word despite the warning ')
+            return render(request, "dashboard/block.html", {})
+        
         return redirect(reverse_lazy('post:home'))
     else:
         return redirect(reverse_lazy('post:home'))
