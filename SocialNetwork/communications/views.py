@@ -48,12 +48,16 @@ def messages_with_one_friend(request, friend):
     friend_url=None
     user_url=None
     frnd = friends.filter(sender__username=friend)
+    # print(frnd)
     if frnd:
-        friend_url = frnd[0].sender.user_image.url
+        if frnd[0].sender.user_image:
+            # print(frnd[0].sender.user_image.url)
+            friend_url = frnd[0].sender.user_image.url
 
     usr = friends.filter(receiver__username=friend)
     if usr:
-        user_url = usr[0].receiver.user_image.url
+        if usr[0].receiver.user_image.url:
+            user_url = usr[0].receiver.user_image.url
     # print(user_url,friend_url)
     
     chat_r = Message.objects.filter(friend__username=request.user.username, author__username=friend)

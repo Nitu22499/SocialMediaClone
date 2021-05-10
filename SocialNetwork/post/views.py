@@ -99,7 +99,7 @@ class HomeView(LoginRequiredMixin, CreateView):
             # print(self.object)
             p = User.objects.get(id=self.request.user.id)
             if p.nude_count < 3 :
-                messages.warning(self.request, 'Warning: You have used abusive word. Please maintain Decorum. Otherwise user will be blocked')
+                messages.warning(self.request, 'Warning: You have used abusive post. Please maintain Decorum. Otherwise user will be blocked')
             
                 print(p.nude_count)
                 p.nude_count = p.nude_count + 1
