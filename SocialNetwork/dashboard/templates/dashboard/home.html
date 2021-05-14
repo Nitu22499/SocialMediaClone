@@ -104,10 +104,10 @@
                                     <div class="post-meta">
                                         <!-- <img src="#" alt=""> -->
                                         
-                                        <div class="description">                                                             
-                                            {% if .mp4 in post.post_image.url %}  
-                                            <video width="500" height="500" controls >
-                                                <source src="{{post.post_image.url}}" type="video/*"> </source>                                    
+                                        <div class="description">       
+                                            {% if post.post_image.url|slice:"-4:" == ".mp4"  %}  
+                                            <video width="500" height="500" type="video/mp4" controls >
+                                                <source src="{{post.post_image.url}}" type="video/mp4"> </source>                                    
                                             </video>
                                             <p>{{post.post_body}}</p> 
                                             {% else %}

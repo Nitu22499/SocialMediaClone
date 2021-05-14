@@ -12,16 +12,109 @@ from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from django.http import Http404, HttpResponseRedirect
 import os
+
+# Imports for ml algorithm 
 from keras.preprocessing import image
 from keras.models import load_model
 import numpy as np
-
-# Create your views here.
-# ml
-# import numpy as np
-# import pandas 
+import cv2
+import imutils
+import datetime
+import pickle as pkl
 from sklearn.externals import joblib
 # endml
+
+def predict_illegal_image_post(post):
+    gun_cascade = cv2.CascadeClassifier('gun_detector.xml')
+    # camera = cv2.VideoCapture('data/gun4_2.mp4')
+    image = cv2.imread(post)
+    gun_exist = False
+    image = imutils.resize(image, width=500)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (21, 21), 0)
+
+    gun = gun_cascade.detectMultiScale(gray, 1.3, 5, minSize = (100, 100))
+
+    if len(gun) > 0:
+        gun_exist = True
+        
+    print("{} gun detected...".format(len(gun)))
+
+
+    for (x, y, w, h) in gun:
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        
+    # show the output image------ isko off hi rhne dena
+    # cv2.imshow("Image", image)
+    cv2.waitKey(0)
+
+    if gun_exist:
+        print("guns detected")
+        prediction = "guns detected"
+    else:
+        print("guns NOT detected")
+        prediction = "guns NOT detected"
+    
+    return prediction
+
+def predict_illegal_video_post(post):
+    gun_cascade = cv2.CascadeClassifier('gun_detector.xml')
+    camera = cv2.VideoCapture(post)
+
+
+    # camera = cv2.VideoCapture(0)
+
+    # initialize the first frame in the video stream
+    firstFrame = None
+
+    # loop over the frames of the video
+
+    gun_exist = False
+
+    while True:
+        (grabbed, frame) = camera.read()
+
+        # if the frame could not be grabbed, then we have reached the end of the video
+        if not grabbed:
+            break
+
+        # resize the frame, convert it to grayscale, and blur it
+        frame = imutils.resize(frame, width=500)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray, (21, 21), 0)
+        
+        gun = gun_cascade.detectMultiScale(gray, 1.3, 5, minSize = (100, 100))
+        
+        if len(gun) > 0:
+            gun_exist = True
+            
+        for (x,y,w,h) in gun:
+            frame = cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
+            roi_gray = gray[y:y+h, x:x+w]
+            roi_color = frame[y:y+h, x:x+w]    
+
+        # if the first frame is None, initialize it
+        if firstFrame is None:
+            firstFrame = gray
+            continue
+
+        # draw the text and timestamp on the frame
+        cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"),
+                        (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
+
+    #     below line is to show gun detection window to isko off hi rkhna
+    #     cv2.imshow("Security Feed", frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    if gun_exist:
+        print("guns detected")
+        prediction = "guns detected"
+    else:
+        print("guns NOT detected")
+        prediction = "guns NOT detected"
+    
+    return prediction
 
 def predict_node_or_safe(post_image):
     model = load_model('model_saved.h5')
@@ -84,16 +177,22 @@ class HomeView(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
-        # print(self.object.post_image.path)
-
+        print(self.object, self.object.post_image.url[-4:])
+        print(self.object.post_image.path)
+        if self.object.post_image.url[-4:] == ".mp4":
+        #     illegal_post_result = predict_illegal_video_post(self.object.post_image.path)
+            return super(HomeView, self).form_valid(form)
+        illegal_post_result = predict_illegal_image_post(self.object.post_image.path)
         res = predict_node_or_safe(self.object.post_image.path)
 
-        if res == 'normal image':
+        if res == 'normal image' and illegal_post_result == 'guns NOT detected':
             # print(self.object)
-            
             messages.success(self.request, 'File uploaded!')
             return super(HomeView, self).form_valid(form)
-        elif res == 'nude image': 
+        elif illegal_post_result == 'guns detected': 
+            messages.warning(self.request, 'Warning: You have illegal post. Please maintain Decorum. Otherwise user will be blocked')
+            return super(HomeView, self).form_valid(form)
+        elif res == 'nude image':
             # print(self.object)
             self.object.delete()
             # print(self.object)
